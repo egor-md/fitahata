@@ -46,7 +46,7 @@ class ArticleController extends Controller
             'is_visible' => ['boolean'],
             'is_main_for_category' => ['boolean'],
             'blocks' => ['nullable', 'array'],
-            'blocks.*.type' => ['required', 'in:heading,text,image,gallery,carousel,feature'],
+            'blocks.*.type' => ['required', 'in:heading,text,image,gallery,carousel,feature,main_info'],
             'blocks.*.content' => ['nullable'],
         ]);
 
@@ -100,7 +100,7 @@ class ArticleController extends Controller
             'is_main_for_category' => ['boolean'],
             'blocks' => ['nullable', 'array'],
             'blocks.*.id' => ['nullable', 'integer'],
-            'blocks.*.type' => ['required', 'in:heading,text,image,gallery,carousel,feature'],
+            'blocks.*.type' => ['required', 'in:heading,text,image,gallery,carousel,feature,main_info'],
             'blocks.*.content' => ['nullable'],
         ]);
 

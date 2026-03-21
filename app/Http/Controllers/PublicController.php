@@ -3,11 +3,48 @@
 namespace App\Http\Controllers;
 
 use App\Models\Article;
+use App\Models\Category;
 use App\Models\Block;
 use Illuminate\View\View;
 
 class PublicController extends Controller
 {
+    public function home(): View
+    {
+        $category = Category::where('slug', 'microzelen')->first();
+
+        $articles = collect();
+        if ($category) {
+            $articles = Article::where('category_id', $category->id)
+                ->where('is_visible', true)
+                ->with('articleBlocks')
+                ->orderBy('title')
+                ->take(8)
+                ->get();
+        }
+
+        $catalogItems = $articles->map(function (Article $article) {
+            $mainInfo = $article->articleBlocks
+                ->firstWhere('type', 'main_info');
+
+            $content = is_array($mainInfo?->content) ? $mainInfo->content : [];
+
+            return [
+                'title' => $content['productName'] ?? $article->title,
+                'slug' => $article->slug,
+                'image_url' => $content['imageUrl'] ?? ($article->cover_path ?: ''),
+                'description' => $content['taste'] ?? '',
+                'benefit' => $content['benefit'] ?? '',
+                'price' => $content['price'] ?? '',
+                'badge' => $content['badge'] ?? null,
+            ];
+        })->values();
+
+        return view('welcome', [
+            'catalogItems' => $catalogItems,
+        ]);
+    }
+
     /**
      * Show article by slug. Only visible articles.
      */

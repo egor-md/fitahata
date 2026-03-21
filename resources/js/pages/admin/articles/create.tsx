@@ -15,7 +15,7 @@ import { ArrowLeft, GripVertical, Trash2 } from 'lucide-react';
 
 type Category = { id: number; name: string; slug: string };
 type BlockItem = {
-    type: 'heading' | 'text' | 'image' | 'gallery' | 'carousel' | 'feature';
+    type: 'heading' | 'text' | 'image' | 'gallery' | 'carousel' | 'feature' | 'main_info';
     content: Record<string, unknown>;
 };
 
@@ -26,6 +26,7 @@ const BLOCK_LABELS: Record<BlockItem['type'], string> = {
     gallery: 'Галерея',
     carousel: 'Карусель',
     feature: 'Сложный блок 50/50',
+    main_info: 'Main info',
 };
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -47,6 +48,16 @@ const defaultContent: Record<BlockItem['type'], Record<string, unknown>> = {
         price: '',
         text: '',
         layout: { imageWidth: '1/2', order: 'image-first' },
+    },
+    main_info: {
+        imageUrl: '',
+        imageAlt: '',
+        productName: '',
+        price: '',
+        benefit: '',
+        taste: '',
+        description: '',
+        badge: '',
     },
 };
 
@@ -243,6 +254,7 @@ export default function AdminArticlesCreate({
                                     <div className="flex flex-wrap gap-2">
                                         {(
                                             [
+                                                'main_info',
                                                 'heading',
                                                 'text',
                                                 'image',
@@ -303,6 +315,7 @@ function BlockEditor({
     onRemove: () => void;
 }) {
     const content = block.content as Record<string, unknown>;
+    const [uploadingMainInfo, setUploadingMainInfo] = useState(false);
 
     if (block.type === 'heading') {
         return (
@@ -364,6 +377,87 @@ function BlockEditor({
                         placeholder="Текст"
                         rows={3}
                         className="flex w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm"
+                    />
+                </div>
+                <Button type="button" variant="ghost" size="icon" onClick={onRemove}>
+                    <Trash2 className="size-4" />
+                </Button>
+            </div>
+        );
+    }
+
+    if (block.type === 'main_info') {
+        return (
+            <div className="flex gap-2 rounded border p-3">
+                <GripVertical className="mt-2 size-4 shrink-0 text-muted-foreground" />
+                <div className="min-w-0 flex-1 space-y-2">
+                    <span className="text-xs font-medium text-muted-foreground">Main info</span>
+                    <div className="flex items-center gap-2">
+                        <label className="cursor-pointer">
+                            <input
+                                type="file"
+                                accept="image/*"
+                                className="hidden"
+                                disabled={uploadingMainInfo}
+                                onChange={async (e) => {
+                                    const file = e.target.files?.[0];
+                                    e.target.value = '';
+                                    if (!file) return;
+                                    setUploadingMainInfo(true);
+                                    try {
+                                        const url = await uploadImage(file);
+                                        onContentChange({ ...content, imageUrl: url });
+                                    } finally {
+                                        setUploadingMainInfo(false);
+                                    }
+                                }}
+                            />
+                            <Button type="button" variant="outline" size="sm" asChild>
+                                <span>{uploadingMainInfo ? 'Загрузка…' : 'Upload photo'}</span>
+                            </Button>
+                        </label>
+                    </div>
+                    <Input
+                        value={String(content.imageUrl ?? '')}
+                        onChange={(e) => onContentChange({ ...content, imageUrl: e.target.value })}
+                        placeholder="URL изображения"
+                    />
+                    <Input
+                        value={String(content.imageAlt ?? '')}
+                        onChange={(e) => onContentChange({ ...content, imageAlt: e.target.value })}
+                        placeholder="Alt изображения"
+                    />
+                    <Input
+                        value={String(content.productName ?? '')}
+                        onChange={(e) => onContentChange({ ...content, productName: e.target.value })}
+                        placeholder="Название продукта"
+                    />
+                    <Input
+                        value={String(content.price ?? '')}
+                        onChange={(e) => onContentChange({ ...content, price: e.target.value })}
+                        placeholder="Цена (например: от 5,50 BYN)"
+                    />
+                    <Input
+                        value={String(content.benefit ?? '')}
+                        onChange={(e) => onContentChange({ ...content, benefit: e.target.value })}
+                        placeholder="Польза"
+                    />
+                    <Input
+                        value={String(content.taste ?? '')}
+                        onChange={(e) => onContentChange({ ...content, taste: e.target.value })}
+                        placeholder="Вкус"
+                    />
+                    <textarea
+                        value={String(content.description ?? '')}
+                        onChange={(e) => onContentChange({ ...content, description: e.target.value })}
+                        placeholder="Описание"
+                        rows={3}
+                        className="flex w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm"
+                    />
+                    <Input
+                        value={String(content.badge ?? '')}
+                        onChange={(e) => onContentChange({ ...content, badge: e.target.value })}
+                        placeholder="Бейдж (необязательно)"
                     />
                 </div>
                 <Button type="button" variant="ghost" size="icon" onClick={onRemove}>
