@@ -1,6 +1,7 @@
 @extends('layouts.site')
 
 @section('title', 'Главная')
+@section('meta_description', 'Свежая микрозелень FITAHATA в Гомеле: популярные культуры, польза, доставка в день сбора и простые рецепты.')
 
 @section('content')
 <section class="home-hero">
@@ -25,7 +26,7 @@
             </div>
             <div class="home-hero-right">
                 <div class="home-hero-imageWrap">
-                    <img src="/images/landing-microgreens.png" alt="Микрозелень в керамической миске" loading="lazy">
+                    <img src="./images/landing-microgreens.webp"   alt="Микрозелень в керамической миске" loading="lazy">
                 </div>
             </div>
         </div>
@@ -41,21 +42,31 @@
                 <h2 class="catalog__title">Популярные культуры</h2>
                 <p class="catalog__subtitle">Свежий сбор каждое утро, доставка в день заказа</p>
             </div>
-            <button class="catalog__allBtn" type="button">
+            <a class="catalog__allBtn" href="#catalog" aria-label="Перейти к каталогу микрозелени">
                 Весь каталог
                 <i class="ri-arrow-right-line" aria-hidden="true"></i>
-            </button>
+            </a>
         </div>
         <div class="catalog__grid">
             @forelse(($catalogItems ?? []) as $item)
                 <div class="catalog-card">
                     <div class="catalog-card__media">
-                        <img
-                            class="catalog-card__img"
-                            src="{{ $item['image_url'] ?? '' }}"
-                            alt="{{ $item['title'] ?? '' }}"
-                            loading="lazy"
-                        >
+                        <picture>
+                            @if(!empty($item['image_webp_srcset']))
+                                <source
+                                    type="image/webp"
+                                    srcset="{{ $item['image_webp_srcset'] }}"
+                                    sizes="(max-width: 767px) 50vw, (max-width: 1023px) 33vw, 25vw"
+                                >
+                            @endif
+                            <img
+                                class="catalog-card__img"
+                                src="{{ $item['image_url'] ?? '' }}"
+                                alt="{{ $item['title'] ?? '' }}"
+                                loading="lazy"
+                                sizes="(max-width: 767px) 50vw, (max-width: 1023px) 33vw, 25vw"
+                            >
+                        </picture>
                         @if(!empty($item['badge']))
                             <span class="catalog-card__badge">{{ $item['badge'] }}</span>
                         @endif
@@ -99,37 +110,37 @@
             </p>
         </div>
         <div class="benefits__grid">
-            <div class="benefits-card" style="background-color: rgb(232, 245, 224); opacity: 1; transform: translateY(0px); transition-delay: 0ms;">
-                <div class="benefits-card__iconWrap" style="background-color: rgba(45, 80, 22, 0.082);">
-                    <span class="benefits-card__bigNumber" style="color: rgb(45, 80, 22);">10×</span>
+            <div class="benefits-card">
+                <div class="benefits-card__iconWrap">
+                    <span class="benefits-card__bigNumber">10×</span>
                 </div>
                 <h3 class="benefits-card__title">Больше витаминов</h3>
                 <p class="benefits-card__text">Чем в зрелых растениях того же вида</p>
             </div>
-            <div class="benefits-card" style="background-color: rgb(240, 247, 232); opacity: 1; transform: translateY(0px); transition-delay: 80ms;">
-                <div class="benefits-card__iconWrap" style="background-color: rgba(58, 107, 26, 0.082);">
-                    <i class="ri-shield-check-line benefits-card__icon" style="color: rgb(58, 107, 26);"></i>
+            <div class="benefits-card">
+                <div class="benefits-card__iconWrap">
+                    <i class="ri-shield-check-line benefits-card__icon"></i>
                 </div>
                 <h3 class="benefits-card__title">Укрепляет иммунитет</h3>
                 <p class="benefits-card__text">Антиоксиданты и фитонутриенты защищают организм</p>
             </div>
-            <div class="benefits-card" style="background-color: rgb(232, 240, 220); opacity: 1; transform: translateY(0px); transition-delay: 160ms;">
-                <div class="benefits-card__iconWrap" style="background-color: rgba(45, 80, 22, 0.082);">
-                    <i class="ri-leaf-line benefits-card__icon" style="color: rgb(45, 80, 22);"></i>
+            <div class="benefits-card">
+                <div class="benefits-card__iconWrap">
+                    <i class="ri-leaf-line benefits-card__icon"></i>
                 </div>
                 <h3 class="benefits-card__title">Натуральный детокс</h3>
                 <p class="benefits-card__text">Хлорофилл мягко очищает кровь и выводит токсины</p>
             </div>
-            <div class="benefits-card" style="background-color: rgb(245, 241, 232); opacity: 1; transform: translateY(0px); transition-delay: 240ms;">
-                <div class="benefits-card__iconWrap" style="background-color: rgba(92, 138, 26, 0.082);">
-                    <i class="ri-heart-pulse-line benefits-card__icon" style="color: rgb(92, 138, 26);"></i>
+            <div class="benefits-card">
+                <div class="benefits-card__iconWrap">
+                    <i class="ri-heart-pulse-line benefits-card__icon"></i>
                 </div>
                 <h3 class="benefits-card__title">Быстрый источник энергии</h3>
                 <p class="benefits-card__text">Максимальная биодоступность питательных веществ</p>
             </div>
-            <div class="benefits-card" style="background-color: rgb(238, 245, 228); opacity: 1; transform: translateY(0px); transition-delay: 320ms;">
-                <div class="benefits-card__iconWrap" style="background-color: rgba(45, 80, 22, 0.082);">
-                    <i class="ri-bowl-line benefits-card__icon" style="color: rgb(45, 80, 22);"></i>
+            <div class="benefits-card">
+                <div class="benefits-card__iconWrap">
+                    <i class="ri-bowl-line benefits-card__icon"></i>
                 </div>
                 <h3 class="benefits-card__title">Для любого рациона</h3>
                 <p class="benefits-card__text">Подходит вегетарианцам, спортсменам и детям</p>
@@ -149,12 +160,11 @@
 <section id="delivery" class="delivery">
     <div class="delivery__container">
         <div class="delivery__grid">
-            <div class="delivery__media" style="opacity: 1; transform: translateX(0px); transition: 0.7s;">
+            <div class="delivery__media">
                 <img
                     alt="Доставка микрозелени в Гомеле"
                     class="delivery__img"
                     src="https://readdy.ai/api/search-image?query=eco%20friendly%20packaging%20microgreens%20delivery%20box%20opened%20with%20fresh%20green%20sprouts%20inside%20kraft%20paper%20box%20natural%20materials%20white%20background%20clean%20organic%20farm%20delivery%20concept%20beautiful%20food%20photography&amp;width=700&amp;height=600&amp;seq=delivery1&amp;orientation=landscape"
-                    style="min-height: 420px;"
                 >
                 <div class="delivery__overlay">
                     <div class="delivery__overlayIconWrap">
@@ -166,7 +176,7 @@
                     </div>
                 </div>
             </div>
-            <div class="delivery__content" style="opacity: 1; transform: translateX(0px); transition: 0.7s 0.15s;">
+            <div class="delivery__content">
                 <div class="delivery__pill">
                     <i class="ri-map-pin-2-line" aria-hidden="true"></i>
                     <span class="delivery__pillText">Доставка</span>
@@ -180,7 +190,7 @@
                     Сохраняем максимум свежести и пользы. Ваша зелень приедет живой, сочной и готовой к столу.
                 </p>
                 <div class="delivery__features">
-                    <div class="delivery__feature" style="opacity: 1; transform: translateX(0px); transition: 0.5s 0.2s;">
+                    <div class="delivery__feature">
                         <div class="delivery__featureIconWrap">
                             <i class="ri-knife-line" aria-hidden="true"></i>
                         </div>
@@ -189,7 +199,7 @@
                             <p class="delivery__featureText">Срезаем утром — привозим к вашему столу в тот же день</p>
                         </div>
                     </div>
-                    <div class="delivery__feature" style="opacity: 1; transform: translateX(0px); transition: 0.5s 0.28s;">
+                    <div class="delivery__feature">
                         <div class="delivery__featureIconWrap">
                             <i class="ri-gift-line" aria-hidden="true"></i>
                         </div>
@@ -198,7 +208,7 @@
                             <p class="delivery__featureText">Или 3 BYN по городу — выбирайте ближайшее время</p>
                         </div>
                     </div>
-                    <div class="delivery__feature" style="opacity: 1; transform: translateX(0px); transition: 0.5s 0.36s;">
+                    <div class="delivery__feature">
                         <div class="delivery__featureIconWrap">
                             <i class="ri-recycle-line" aria-hidden="true"></i>
                         </div>
@@ -207,7 +217,7 @@
                             <p class="delivery__featureText">Используем только перерабатываемые материалы</p>
                         </div>
                     </div>
-                    <div class="delivery__feature" style="opacity: 1; transform: translateX(0px); transition: 0.5s 0.44s;">
+                    <div class="delivery__feature">
                         <div class="delivery__featureIconWrap">
                             <i class="ri-time-line" aria-hidden="true"></i>
                         </div>
@@ -216,7 +226,7 @@
                             <p class="delivery__featureText">Выбирайте время доставки с 10:00 до 21:00</p>
                         </div>
                     </div>
-                    <div class="delivery__feature" style="opacity: 1; transform: translateX(0px); transition: 0.5s 0.52s;">
+                    <div class="delivery__feature">
                         <div class="delivery__featureIconWrap">
                             <i class="ri-repeat-line" aria-hidden="true"></i>
                         </div>
@@ -227,14 +237,14 @@
                     </div>
                 </div>
                 <div class="delivery__actions">
-                    <button class="delivery__btn delivery__btn--primary" type="button">
+                    <a class="delivery__btn delivery__btn--primary" href="#home-contacts" aria-label="Перейти к контактам для оформления заказа">
                         Оформить заказ
                         <i class="ri-arrow-right-line" aria-hidden="true"></i>
-                    </button>
-                    <button class="delivery__btn delivery__btn--secondary" type="button">
+                    </a>
+                    <a class="delivery__btn delivery__btn--secondary" href="#delivery" aria-label="Перейти к условиям доставки">
                         Условия доставки
                         <i class="ri-information-line" aria-hidden="true"></i>
-                    </button>
+                    </a>
                 </div>
             </div>
         </div>
@@ -333,42 +343,42 @@
             <p class="why__subtitle">Прозрачность на каждом этапе — от семени до вашего стола</p>
         </div>
         <div class="why__grid">
-            <div class="why-card" style="background-color: rgb(232, 245, 224); opacity: 1; transition: 0.5s;">
+            <div class="why-card">
                 <div class="why-card__iconWrap">
                     <i class="ri-plant-line why-card__icon" aria-hidden="true"></i>
                 </div>
                 <h3 class="why-card__title">100% эко-выращивание</h3>
                 <p class="why-card__text">Закрытые фермы без использования почвы и пестицидов</p>
             </div>
-            <div class="why-card" style="background-color: rgb(240, 247, 232); opacity: 1; transition: 0.5s 70ms;">
+            <div class="why-card">
                 <div class="why-card__iconWrap">
                     <i class="ri-forbid-2-line why-card__icon" aria-hidden="true"></i>
                 </div>
                 <h3 class="why-card__title">Без химии</h3>
                 <p class="why-card__text">Только вода, свет и семена. Никаких добавок</p>
             </div>
-            <div class="why-card" style="background-color: rgb(238, 245, 228); opacity: 1; transition: 0.5s 140ms;">
+            <div class="why-card">
                 <div class="why-card__iconWrap">
                     <i class="ri-user-settings-line why-card__icon" aria-hidden="true"></i>
                 </div>
                 <h3 class="why-card__title">Выращивание под заказ</h3>
                 <p class="why-card__text">Сбор только после получения заказа — максимальная свежесть</p>
             </div>
-            <div class="why-card" style="background-color: rgb(245, 241, 232); opacity: 1; transition: 0.5s 210ms;">
+            <div class="why-card">
                 <div class="why-card__iconWrap">
                     <i class="ri-award-line why-card__icon" aria-hidden="true"></i>
                 </div>
                 <h3 class="why-card__title">Контроль качества</h3>
                 <p class="why-card__text">Каждая партия проходит визуальный и вкусовой контроль</p>
             </div>
-            <div class="why-card" style="background-color: rgb(232, 240, 220); opacity: 1; transition: 0.5s 280ms;">
+            <div class="why-card">
                 <div class="why-card__iconWrap">
                     <i class="ri-map-pin-line why-card__icon" aria-hidden="true"></i>
                 </div>
                 <h3 class="why-card__title">Локальное производство</h3>
                 <p class="why-card__text">Выращиваем прямо в Гомеле — от фермы до стола</p>
             </div>
-            <div class="why-card" style="background-color: rgb(237, 245, 224); opacity: 1; transition: 0.5s 350ms;">
+            <div class="why-card">
                 <div class="why-card__iconWrap">
                     <i class="ri-heart-3-line why-card__icon" aria-hidden="true"></i>
                 </div>
@@ -396,10 +406,10 @@
                 </div>
                 <div class="why__panelTextBlock">
                     <p class="why__panelText">Мы не перепродаём. Каждый пакетик микрозелени вырастили мы сами, в нашей ферме, под нашим контролем — с чистыми технологиями и любовью.</p>
-                    <button type="button" class="why__cta">
+                    <a href="#catalog" class="why__cta" aria-label="Перейти в каталог микрозелени">
                         Попробовать сейчас
                         <i class="ri-arrow-right-line why__ctaIcon" aria-hidden="true"></i>
-                    </button>
+                    </a>
                 </div>
             </div>
         </div>
@@ -413,7 +423,7 @@
             <p class="recipes__subtitle">Простые и вкусные рецепты, которые превратят вашу кухню в маленький ресторан</p>
         </div>
         <div class="recipes__main">
-            <div class="recipes__card" style="transition: opacity 0.35s, transform 0.35s;">
+            <div class="recipes__card" aria-live="polite">
                 <div class="recipes__media">
                     <img alt="Сэндвич с редисом и творожным сыром" class="recipes__img" src="https://readdy.ai/api/search-image?query=artisan%20sandwich%20with%20radish%20microgreens%20cream%20cheese%20sourdough%20bread%20cucumber%20red%20onion%20close%20up%20food%20photography%20natural%20light%20rustic%20wooden%20board%20fresh%20vibrant%20colors&amp;width=800&amp;height=600&amp;seq=recipe3&amp;orientation=landscape">
                     <div class="recipes__gradient"></div>
@@ -489,11 +499,11 @@
                         </div>
                     </div>
                     <div class="recipes__actions">
-                        <a href="#каталог" class="recipes__actionBtn recipes__actionBtn--primary">
+                        <a href="#catalog" class="recipes__actionBtn recipes__actionBtn--primary">
                             <i class="ri-shopping-basket-line recipes__actionIcon" aria-hidden="true"></i>
                             Купить микрозелень
                         </a>
-                        <a href="#рецепты" class="recipes__actionBtn recipes__actionBtn--ghost">
+                        <a href="#cooc" class="recipes__actionBtn recipes__actionBtn--ghost">
                             Все рецепты
                             <i class="ri-arrow-right-line recipes__actionIcon" aria-hidden="true"></i>
                         </a>
@@ -509,12 +519,12 @@
                     <button class="recipes__pageDot" type="button" aria-label="Рецепт 5"></button>
                 </div>
                 <div class="recipes__navRow">
-                    <button type="button" class="recipes__navBtn" aria-label="Предыдущий рецепт">
+                    <button type="button" class="recipes__navBtn" aria-label="Предыдущий рецепт" aria-controls="cooc">
                         <div class="recipes__navIconWrap">
                             <i class="ri-arrow-left-line recipes__navIcon" aria-hidden="true"></i>
                         </div>
                     </button>
-                    <button type="button" class="recipes__navBtn" aria-label="Следующий рецепт">
+                    <button type="button" class="recipes__navBtn" aria-label="Следующий рецепт" aria-controls="cooc">
                         <div class="recipes__navIconWrap">
                             <i class="ri-arrow-right-line recipes__navIcon" aria-hidden="true"></i>
                         </div>
@@ -527,87 +537,6 @@
 </section>
 
 @push('scripts')
-<script>
-        (function () {
-            const slider = document.querySelector('.cooking-slider');
-            if (!slider) return;
-
-            const viewport = slider.querySelector('.cooking-slider-viewport');
-            const track = slider.querySelector('.cooking-slider-track');
-            const slides = Array.from(slider.querySelectorAll('.cooking-slide'));
-            const leftBtn = slider.querySelector('.cooking-slider-arrow--left');
-            const rightBtn = slider.querySelector('.cooking-slider-arrow--right');
-            const dotsWrap = slider.querySelector('.cooking-slider-dots');
-
-            const visible = Number(slider.dataset.visible || '4');
-            slider.style.setProperty('--cooking-visible', String(visible));
-            const maxIndex = Math.max(0, slides.length - visible);
-            let index = 0;
-            let slideWidth = 0;
-            let slideStep = 0;
-
-            function recalc() {
-                if (!slides[0]) return;
-                slideWidth = slides[0].getBoundingClientRect().width;
-                const gap = parseFloat((window.getComputedStyle(track).gap || '0').toString()) || 0;
-                slideStep = slideWidth + gap;
-            }
-
-            function setActiveDot(nextIndex) {
-                if (!dotsWrap) return;
-                const dots = Array.from(dotsWrap.querySelectorAll('button[data-dot]'));
-                dots.forEach((d) => {
-                    const isActive = Number(d.dataset.dot) === nextIndex;
-                    d.classList.toggle('is-active', isActive);
-                    d.setAttribute('aria-current', isActive ? 'true' : 'false');
-                });
-            }
-
-            function go(nextIndex) {
-                index = Math.min(maxIndex, Math.max(0, nextIndex));
-                recalc();
-                const offset = index * slideStep;
-                track.style.transform = 'translateX(' + -offset + 'px)';
-                setActiveDot(index);
-            }
-
-            // Dots
-            if (dotsWrap) {
-                dotsWrap.innerHTML = '';
-                for (let i = 0; i <= maxIndex; i++) {
-                    const btn = document.createElement('button');
-                    btn.type = 'button';
-                    btn.dataset.dot = String(i);
-                    btn.className = 'cooking-slider-dot';
-                    btn.setAttribute('aria-label', 'Слайд ' + (i + 1));
-                    btn.addEventListener('click', function () {
-                        go(i);
-                    });
-                    dotsWrap.appendChild(btn);
-                }
-            }
-
-            // Arrows
-            if (leftBtn) {
-                leftBtn.addEventListener('click', function () {
-                    go(index - 1);
-                });
-            }
-            if (rightBtn) {
-                rightBtn.addEventListener('click', function () {
-                    go(index + 1);
-                });
-            }
-
-            // Resize
-            window.addEventListener('resize', function () {
-                go(index);
-            });
-
-            recalc();
-            go(0);
-        })();
-</script>
 <script>
         (function () {
             const section = document.getElementById('cooc');

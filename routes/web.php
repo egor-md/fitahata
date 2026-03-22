@@ -8,6 +8,8 @@ use App\Http\Controllers\PublicController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [PublicController::class, 'home'])->name('home');
+Route::get('/contacts', [PublicController::class, 'contacts'])->name('contacts');
+Route::get('/test_card', [PublicController::class, 'testCard'])->name('test.card');
 
 Route::get('/article/{slug}', [PublicController::class, 'article'])->name('article.show');
 

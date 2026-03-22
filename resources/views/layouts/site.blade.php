@@ -4,6 +4,23 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description"
+        content="@yield('meta_description', 'Свежая микрозелень FITAHATA в Гомеле: каталог культур, доставка в день сбора и полезные рецепты.')">
+    <link rel="canonical" href="@yield('canonical', url()->current())">
+    <meta property="og:type" content="@yield('og_type', 'website')">
+    <meta property="og:site_name" content="FITAHATA">
+    <meta property="og:title"
+        content="@yield('og_title', trim((($__env->yieldContent('title')) ?: config('app.name')) . ' | FITAHATA'))">
+    <meta property="og:description"
+        content="@yield('og_description', trim($__env->yieldContent('meta_description', 'Свежая микрозелень FITAHATA в Гомеле: каталог культур, доставка в день сбора и полезные рецепты.')))">
+    <meta property="og:url" content="@yield('og_url', url()->current())">
+    <meta property="og:image" content="@yield('og_image', asset('images/landing-microgreens.webp'))">
+    <meta name="twitter:card" content="@yield('twitter_card', 'summary_large_image')">
+    <meta name="twitter:title"
+        content="@yield('twitter_title', trim((($__env->yieldContent('title')) ?: config('app.name')) . ' | FITAHATA'))">
+    <meta name="twitter:description"
+        content="@yield('twitter_description', trim($__env->yieldContent('meta_description', 'Свежая микрозелень FITAHATA в Гомеле: каталог культур, доставка в день сбора и полезные рецепты.')))">
+    <meta name="twitter:image" content="@yield('twitter_image', asset('images/landing-microgreens.webp'))">
     <title>@yield('title', config('app.name'))</title>
     <link rel="icon" href="/favicon.ico" sizes="any">
     <link rel="icon" href="/favicon.svg" type="image/svg+xml">
@@ -16,14 +33,20 @@
 
 <body>
     <header class="site-header">
-        <nav class="site-nav site-container">
+        <nav class="site-nav site-container" aria-label="Основная навигация">
             <div class="site-nav-left">
-                <div class="site-logo-wrap">
-                    <img src="./images/logo-min.png" alt="">
-                </div>
+                <a href="{{ route('home') }}" class="site-logo-link" aria-label="FITAHATA — на главную">
+                    <div class="site-logo-wrap">
+                        <img src="/images/logo-min.webp" alt="Логотип FITAHATA" width="277" height="120">
+                    </div>
+                </a>
             </div>
+            <button class="mobile-menu-toggle" type="button" aria-label="Открыть меню" aria-controls="site-menu"
+                aria-expanded="false">
+                <i class="ri-menu-line" aria-hidden="true"></i>
+            </button>
 
-            <div class="site-nav-right">
+            <div id="site-menu" class="site-nav-right" aria-hidden="true">
                 <div class="menu">
                     <a href="/" class="menu-link {{ request()->is('/') ? 'active' : '' }}">
                         Главная
@@ -83,9 +106,10 @@
                             <span class="menu-text">{{ $category->name }}</span>
                         @endif
                     @endforeach
+                    <a href="{{ route('contacts') }}" class="menu-link {{ request()->routeIs('contacts') ? 'active' : '' }}">
+                        Контакты
+                    </a>
                 </div>
-            </div>
-
             </div>
         </nav>
     </header>
@@ -99,7 +123,7 @@
             <div class="site-container home-footer__container">
                 <div class="home-footer__grid">
                     <div class="home-footer__col home-footer__col--brand">
-                        <a href="#" class="home-footer__brandLink" aria-label="FITAHATA">
+                        <a href="/" class="home-footer__brandLink" aria-label="FITAHATA">
                             <div class="home-footer__brandRow">
                                 <div class="home-footer__brandIcon">
                                     <i class="ri-leaf-fill home-footer__brandIconGlyph" aria-hidden="true"></i>
@@ -131,7 +155,7 @@
                         <nav class="home-footer__nav" aria-label="Навигация">
                             <ul class="home-footer__navList">
                                 <li class="home-footer__navItem">
-                                    <a href="#каталог" class="home-footer__navLink">
+                                    <a href="{{ route('home') }}#catalog" class="home-footer__navLink">
                                         <span class="home-footer__navArrow" aria-hidden="true">
                                             <i class="ri-arrow-right-s-line" aria-hidden="true"></i>
                                         </span>
@@ -139,7 +163,7 @@
                                     </a>
                                 </li>
                                 <li class="home-footer__navItem">
-                                    <a href="#польза" class="home-footer__navLink">
+                                    <a href="{{ route('home') }}#benefits" class="home-footer__navLink">
                                         <span class="home-footer__navArrow" aria-hidden="true">
                                             <i class="ri-arrow-right-s-line" aria-hidden="true"></i>
                                         </span>
@@ -147,7 +171,7 @@
                                     </a>
                                 </li>
                                 <li class="home-footer__navItem">
-                                    <a href="#доставка" class="home-footer__navLink">
+                                    <a href="{{ route('home') }}#delivery" class="home-footer__navLink">
                                         <span class="home-footer__navArrow" aria-hidden="true">
                                             <i class="ri-arrow-right-s-line" aria-hidden="true"></i>
                                         </span>
@@ -155,7 +179,7 @@
                                     </a>
                                 </li>
                                 <li class="home-footer__navItem">
-                                    <a href="#рецепты" class="home-footer__navLink">
+                                    <a href="{{ route('home') }}#cooc" class="home-footer__navLink">
                                         <span class="home-footer__navArrow" aria-hidden="true">
                                             <i class="ri-arrow-right-s-line" aria-hidden="true"></i>
                                         </span>
@@ -166,7 +190,7 @@
                         </nav>
                     </div>
 
-                    <div class="home-footer__col home-footer__col--contacts">
+                    <div id="home-contacts" class="home-footer__col home-footer__col--contacts">
                         <h3 class="home-footer__sectionTitle">
                             <span class="home-footer__sectionIcon" aria-hidden="true">
                                 <i class="ri-contacts-line" aria-hidden="true"></i>
@@ -307,6 +331,64 @@
     </footer>
 
     @stack('scripts')
+    <script>
+        (function () {
+            const toggle = document.querySelector('.mobile-menu-toggle');
+            const menu = document.getElementById('site-menu');
+            if (!toggle || !menu) return;
+
+            function closeMenu() {
+                menu.classList.remove('site-nav-right--open');
+                menu.setAttribute('aria-hidden', 'true');
+                toggle.setAttribute('aria-expanded', 'false');
+                toggle.setAttribute('aria-label', 'Открыть меню');
+                document.body.classList.remove('is-menu-open');
+            }
+
+            function openMenu() {
+                menu.classList.add('site-nav-right--open');
+                menu.setAttribute('aria-hidden', 'false');
+                toggle.setAttribute('aria-expanded', 'true');
+                toggle.setAttribute('aria-label', 'Закрыть меню');
+                document.body.classList.add('is-menu-open');
+            }
+
+            toggle.addEventListener('click', function () {
+                const isOpen = menu.classList.contains('site-nav-right--open');
+                if (isOpen) {
+                    closeMenu();
+                    return;
+                }
+                openMenu();
+            });
+
+            menu.addEventListener('click', function (event) {
+                if (event.target instanceof HTMLElement && event.target.closest('a')) {
+                    closeMenu();
+                }
+            });
+
+            document.addEventListener('click', function (event) {
+                if (!(event.target instanceof Node)) return;
+                if (!menu.contains(event.target) && !toggle.contains(event.target)) {
+                    closeMenu();
+                }
+            });
+
+            document.addEventListener('keydown', function (event) {
+                if (event.key === 'Escape') closeMenu();
+            });
+
+            window.addEventListener('resize', function () {
+                if (window.innerWidth > 992) {
+                    closeMenu();
+                    menu.removeAttribute('aria-hidden');
+                } else if (!menu.classList.contains('site-nav-right--open')) {
+                    menu.setAttribute('aria-hidden', 'true');
+                }
+            });
+        })();
+    </script>
 </body>
 
 </html>

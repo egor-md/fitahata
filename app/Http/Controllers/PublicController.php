@@ -3,8 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Article;
-use App\Models\Category;
 use App\Models\Block;
+use App\Models\Category;
+use Illuminate\Support\Str;
 use Illuminate\View\View;
 
 class PublicController extends Controller
@@ -29,10 +30,21 @@ class PublicController extends Controller
 
             $content = is_array($mainInfo?->content) ? $mainInfo->content : [];
 
+            $imageUrl = $content['imageUrl'] ?? ($article->cover_path ?: '');
+            $webpSrcset = null;
+
+            if (is_string($imageUrl) && Str::startsWith($imageUrl, '/images/catalog/') && Str::endsWith($imageUrl, '.png')) {
+                $base = Str::beforeLast($imageUrl, '.png');
+                $webpSrcset = collect([320, 640, 960, 1376])
+                    ->map(fn (int $width) => "{$base}-{$width}.webp {$width}w")
+                    ->implode(', ');
+            }
+
             return [
                 'title' => $content['productName'] ?? $article->title,
                 'slug' => $article->slug,
-                'image_url' => $content['imageUrl'] ?? ($article->cover_path ?: ''),
+                'image_url' => $imageUrl,
+                'image_webp_srcset' => $webpSrcset,
                 'description' => $content['taste'] ?? '',
                 'benefit' => $content['benefit'] ?? '',
                 'price' => $content['price'] ?? '',
@@ -43,6 +55,16 @@ class PublicController extends Controller
         return view('welcome', [
             'catalogItems' => $catalogItems,
         ]);
+    }
+
+    public function contacts(): View
+    {
+        return view('contacts');
+    }
+
+    public function testCard(): View
+    {
+        return view('test_card');
     }
 
     /**
