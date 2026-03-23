@@ -152,7 +152,7 @@
             </div>
             <p class="benefits__scienceText">
                 <strong>Научный факт:</strong>
-                Исследования Университета Мэриленда показали, что микрозелень содержит в 4–40 раз больше питательных веществ, чем зрелые растения того же вида.
+                �?сследования Университета Мэриленда показали, что микрозелень содержит в 4–40 раз больше питательных веществ, чем зрелые растения того же вида.
             </p>
         </div>
     </div>
@@ -205,7 +205,7 @@
                         </div>
                         <div>
                             <h4 class="delivery__featureTitle">Бесплатно от 15 BYN</h4>
-                            <p class="delivery__featureText">Или 3 BYN по городу — выбирайте ближайшее время</p>
+                            <p class="delivery__featureText">�?ли 3 BYN по городу — выбирайте ближайшее время</p>
                         </div>
                     </div>
                     <div class="delivery__feature">
@@ -214,7 +214,7 @@
                         </div>
                         <div>
                             <h4 class="delivery__featureTitle">Экологичная упаковка</h4>
-                            <p class="delivery__featureText">Используем только перерабатываемые материалы</p>
+                            <p class="delivery__featureText">�?спользуем только перерабатываемые материалы</p>
                         </div>
                     </div>
                     <div class="delivery__feature">
@@ -318,7 +318,7 @@
                     <div class="subscription__featureIconWrap">
                         <i class="ri-settings-3-line subscription__featureIcon" aria-hidden="true"></i>
                     </div>
-                    <h3 class="subscription__featureTitle">Индивидуальный набор</h3>
+                    <h3 class="subscription__featureTitle">�?ндивидуальный набор</h3>
                     <p class="subscription__featureText">Выбирайте культуры под свой вкус и рацион</p>
                 </div>
                 <div class="subscription__feature">
@@ -418,7 +418,7 @@
 <section id="cooc" class="recipes">
     <div class="recipes__container">
         <div class="recipes__header">
-            <span class="recipes__pill">Идеи для кухни</span>
+            <span class="recipes__pill">�?деи для кухни</span>
             <h2 class="recipes__title">Готовим с микрозеленью</h2>
             <p class="recipes__subtitle">Простые и вкусные рецепты, которые превратят вашу кухню в маленький ресторан</p>
         </div>
@@ -457,7 +457,7 @@
                         <h3 class="recipes__recipeTitle">Сэндвич с редисом и творожным сыром</h3>
                         <p class="recipes__recipeDesc">Хрустящий сэндвич с пряными ростками редиса и нежным творожным сыром. Отличный вариант для быстрого завтрака или перекуса на ходу.</p>
                         <div class="recipes__ingredients">
-                            <h4 class="recipes__ingredientsTitle">Ингредиенты</h4>
+                            <h4 class="recipes__ingredientsTitle">�?нгредиенты</h4>
                             <ul class="recipes__ingredientsList">
                                 <li class="recipes__ingredientItem">
                                     <div class="recipes__ingredientIconWrap">
@@ -565,7 +565,7 @@
                 {
                     imgSrc: 'https://readdy.ai/api/search-image?query=artisan%20sandwich%20with%20peas%20microgreens%20green%20salsa%20bread%20close%20up%20food%20photography%20natural%20light%20rustic%20wooden%20board%20fresh%20vibrant%20colors&width=800&height=600&seq=recipe1&orientation=landscape',
                     imgAlt: 'Сэндвич с горохом и микрозеленью',
-                    tagAccent: 'Идея за 10 минут',
+                    tagAccent: '�?дея за 10 минут',
                     tagGlass: 'Сэндвичи',
                     meta: ['10 мин', '260 ккал', 'Легко'],
                     title: 'Сэндвич с горохом и зеленью',

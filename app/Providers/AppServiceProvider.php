@@ -2,48 +2,35 @@
 
 namespace App\Providers;
 
-use App\Models\Category;
+use App\Models\Plant;
 use Carbon\CarbonImmutable;
-use Laravel\Fortify\Features;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rules\Password;
+use Laravel\Fortify\Features;
 
 class AppServiceProvider extends ServiceProvider
 {
-    /**
-     * Register any application services.
-     */
     public function register(): void
     {
         //
     }
 
-    /**
-     * Bootstrap any application services.
-     */
     public function boot(): void
     {
         $this->configureDefaults();
 
         View::composer('layouts.site', function ($view) {
-            $view->with('menuCategories', Category::where('show_in_menu', true)
-                ->orderBy('sort_order')
+            $view->with('menuPlants', Plant::query()
+                ->where('is_visible', true)
                 ->orderBy('name')
-                ->with([
-                    'articles' => fn ($q) => $q->where('is_visible', true)->orderBy('title'),
-                    'mainArticle',
-                ])
-                ->get(['id', 'name', 'slug', 'sort_order']))
+                ->get(['id', 'name', 'slug']))
                 ->with('canRegister', Features::enabled(Features::registration()));
         });
     }
 
-    /**
-     * Configure default behaviors for production-ready applications.
-     */
     protected function configureDefaults(): void
     {
         Date::use(CarbonImmutable::class);

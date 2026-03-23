@@ -1,16 +1,17 @@
 <?php
 
+use App\Support\Microgreen\PlantCultureImporter;
 use Illuminate\Database\Migrations\Migration;
 
 return new class extends Migration
 {
     public function up(): void
     {
-        // Legacy article image update removed.
+        PlantCultureImporter::import('mangold');
     }
 
     public function down(): void
     {
-        // no-op
+        PlantCultureImporter::revert('mangold');
     }
 };

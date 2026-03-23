@@ -2,9 +2,9 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Plant;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
-
 
 class HandleInertiaRequests extends Middleware
 {
@@ -44,6 +44,9 @@ class HandleInertiaRequests extends Middleware
             ],
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
             'csrf_token' => csrf_token(),
+            'adminPlantsNav' => fn () => $request->user()
+                ? Plant::query()->orderBy('name')->get(['id', 'name', 'slug'])->values()->all()
+                : [],
         ];
     }
 }

@@ -4094,7 +4094,7 @@ a.catalog__allBtn {
   background: rgba(255, 255, 255, 0.18);
 }
 
-/* ---------- Страница test_card (без Tailwind) ---------- */
+/* ---------- Страница microzelen / карточка культуры (без Tailwind) ---------- */
 
 .test-card-product {
   padding-top: clamp(88px, 14vw, 120px);
@@ -4103,7 +4103,7 @@ a.catalog__allBtn {
 }
 
 .test-card-product__inner {
-  max-width: 1280px;
+    max-width: var(--page-max-width);
 }
 
 .test-card-product__grid {
@@ -4899,6 +4899,23 @@ a.catalog__allBtn {
 .test-card-recipe {
   padding: 80px 0;
   background: #f5f1e8;
+}
+
+.test-card-recipe__viewport {
+  overflow: hidden;
+  width: 100%;
+}
+
+.test-card-recipe__track {
+  display: flex;
+  transition: transform 0.35s ease;
+  will-change: transform;
+}
+
+.test-card-recipe__slide {
+  flex: 0 0 100%;
+  width: 100%;
+  min-width: 0;
 }
 
 .test-card-recipe__card {
