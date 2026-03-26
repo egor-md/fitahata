@@ -26,7 +26,7 @@
             </div>
             <div class="home-hero-right">
                 <div class="home-hero-imageWrap">
-                    <img src="./images/landing-microgreens.webp"   alt="Микрозелень в керамической миске" loading="lazy">
+                    <img src="./images/landing-microgreens.webp" alt="Микрозелень в керамической миске" loading="lazy">
                 </div>
             </div>
         </div>
@@ -42,54 +42,60 @@
                 <h2 class="catalog__title">Популярные культуры</h2>
                 <p class="catalog__subtitle">Свежий сбор каждое утро, доставка в день заказа</p>
             </div>
-            <a class="catalog__allBtn" href="#catalog" aria-label="Перейти к каталогу микрозелени">
+            <a class="catalog__allBtn" href="{{ route('catalog') }}" aria-label="Перейти к каталогу микрозелени">
                 Весь каталог
                 <i class="ri-arrow-right-line" aria-hidden="true"></i>
             </a>
         </div>
         <div class="catalog__grid">
             @forelse(($catalogItems ?? []) as $item)
-                <div class="catalog-card">
-                    <div class="catalog-card__media">
-                        <picture>
-                            @if(!empty($item['image_webp_srcset']))
-                                <source
-                                    type="image/webp"
-                                    srcset="{{ $item['image_webp_srcset'] }}"
-                                    sizes="(max-width: 767px) 50vw, (max-width: 1023px) 33vw, 25vw"
-                                >
-                            @endif
-                            <img
-                                class="catalog-card__img"
-                                src="{{ $item['image_url'] ?? '' }}"
-                                alt="{{ $item['title'] ?? '' }}"
-                                loading="lazy"
-                                sizes="(max-width: 767px) 50vw, (max-width: 1023px) 33vw, 25vw"
-                            >
-                        </picture>
-                        @if(!empty($item['badge']))
-                            <span class="catalog-card__badge">{{ $item['badge'] }}</span>
+            <div class="catalog-card">
+                <div class="catalog-card__media">
+                    <picture>
+                        @if(!empty($item['image_webp_srcset']))
+                        <source type="image/webp" srcset="{{ $item['image_webp_srcset'] }}" sizes="(max-width: 767px) 50vw, (max-width: 1023px) 33vw, 25vw">
                         @endif
-                    </div>
-                    <div class="catalog-card__body">
+                        <img
+                            class="catalog-card__img"
+                            src="{{ $item['image_url'] ?? '' }}"
+                            alt="{{ $item['title'] ?? '' }}"
+                            loading="lazy"
+                            sizes="(max-width: 767px) 50vw, (max-width: 1023px) 33vw, 25vw"
+                        >
+                    </picture>
+                    @if(!empty($item['badge']))
+                            @php
+                                $badgeValue = trim((string) $item['badge']);
+                                $badgeClass = match ($badgeValue) {
+                                    'Хит' => 'catalog-card__badge--hit',
+                                    'Новинка' => 'catalog-card__badge--new',
+                                    'Выгода' => 'catalog-card__badge--deal',
+                                    default => '',
+                                };
+                            @endphp
+                    <span class="catalog-card__badge {{ $badgeClass }}">{{ $item['badge'] }}</span>
+                    @endif
+                </div>
+                <div class="catalog-card__body">
+                    <div class="catalog-card__body_w">
                         <h3 class="catalog-card__title">{{ $item['title'] ?? '' }}</h3>
+                        <p class="catalog-card__desc">{{ $item['subtitle'] ?? '' }}</p>
                         <p class="catalog-card__desc">{{ $item['description'] ?? '' }}</p>
-                        <p class="catalog-card__meta">{{ $item['benefit'] ?? '' }}</p>
-                        <div class="catalog-card__row">
-                            <span class="catalog-card__price">{{ $item['price'] ?? '' }}</span>
-                            <a href="{{ route('article.show', $item['slug']) }}" class="catalog-card__btn">
-                                Подробнее
-                                <i class="ri-arrow-right-s-line" aria-hidden="true"></i>
-                            </a>
-                        </div>
+                    </div>
+                    <div class="catalog-card__row">
+                        <span class="catalog-card__price">{{ $item['price'] ?? '' }}</span>
+                        <a href="{{ route('article.show', $item['slug']) }}" class="catalog-card__btn">
+                            Подробнее
+                            <i class="ri-arrow-right-s-line" aria-hidden="true"></i>
+                        </a>
                     </div>
                 </div>
+            </div>
             @empty
-                <p class="catalog__bottomText">Каталог пока пуст. Добавьте статьи в категорию «Микрозелень».</p>
+            <p class="catalog__bottomText">Каталог пока пуст. Добавьте растения в разделе админки «Растения».</p>
             @endforelse
         </div>
         <div class="catalog__bottom">
-            <p class="catalog__bottomText">Есть вопрос по культурам? Мы поможем выбрать</p>
             <button class="catalog__contactBtn" type="button">
                 <i class="ri-customer-service-line" aria-hidden="true"></i>
                 Связаться с нами
@@ -152,7 +158,7 @@
             </div>
             <p class="benefits__scienceText">
                 <strong>Научный факт:</strong>
-                �?сследования Университета Мэриленда показали, что микрозелень содержит в 4–40 раз больше питательных веществ, чем зрелые растения того же вида.
+                Исследования показывают, что микрозелень содержит в 4–40 раз больше питательных веществ, чем зрелые растения того же вида.
             </p>
         </div>
     </div>
@@ -161,11 +167,7 @@
     <div class="delivery__container">
         <div class="delivery__grid">
             <div class="delivery__media">
-                <img
-                    alt="Доставка микрозелени в Гомеле"
-                    class="delivery__img"
-                    src="https://readdy.ai/api/search-image?query=eco%20friendly%20packaging%20microgreens%20delivery%20box%20opened%20with%20fresh%20green%20sprouts%20inside%20kraft%20paper%20box%20natural%20materials%20white%20background%20clean%20organic%20farm%20delivery%20concept%20beautiful%20food%20photography&amp;width=700&amp;height=600&amp;seq=delivery1&amp;orientation=landscape"
-                >
+                <img alt="Доставка микрозелени в Гомеле" class="delivery__img" src="./images/2534da8bb9c670d8384dc1505ba9d117.jpg">
                 <div class="delivery__overlay">
                     <div class="delivery__overlayIconWrap">
                         <i class="ri-truck-line" aria-hidden="true"></i>
@@ -205,16 +207,7 @@
                         </div>
                         <div>
                             <h4 class="delivery__featureTitle">Бесплатно от 15 BYN</h4>
-                            <p class="delivery__featureText">�?ли 3 BYN по городу — выбирайте ближайшее время</p>
-                        </div>
-                    </div>
-                    <div class="delivery__feature">
-                        <div class="delivery__featureIconWrap">
-                            <i class="ri-recycle-line" aria-hidden="true"></i>
-                        </div>
-                        <div>
-                            <h4 class="delivery__featureTitle">Экологичная упаковка</h4>
-                            <p class="delivery__featureText">�?спользуем только перерабатываемые материалы</p>
+                            <p class="delivery__featureText">Или 3 BYN по городу — выбирайте ближайшее время</p>
                         </div>
                     </div>
                     <div class="delivery__feature">
@@ -318,7 +311,7 @@
                     <div class="subscription__featureIconWrap">
                         <i class="ri-settings-3-line subscription__featureIcon" aria-hidden="true"></i>
                     </div>
-                    <h3 class="subscription__featureTitle">�?ндивидуальный набор</h3>
+                    <h3 class="subscription__featureTitle">Индивидуальный набор</h3>
                     <p class="subscription__featureText">Выбирайте культуры под свой вкус и рацион</p>
                 </div>
                 <div class="subscription__feature">
@@ -340,7 +333,6 @@
                 <span class="why__pillText">Наши преимущества</span>
             </div>
             <h2 class="why__title">Почему выбирают FITAHATA</h2>
-            <p class="why__subtitle">Прозрачность на каждом этапе — от семени до вашего стола</p>
         </div>
         <div class="why__grid">
             <div class="why-card">
@@ -348,7 +340,7 @@
                     <i class="ri-plant-line why-card__icon" aria-hidden="true"></i>
                 </div>
                 <h3 class="why-card__title">100% эко-выращивание</h3>
-                <p class="why-card__text">Закрытые фермы без использования почвы и пестицидов</p>
+                <p class="why-card__text">Закрытые фермы без использования гербецидов и пестицидов</p>
             </div>
             <div class="why-card">
                 <div class="why-card__iconWrap">
@@ -405,7 +397,7 @@
                     </div>
                 </div>
                 <div class="why__panelTextBlock">
-                    <p class="why__panelText">Мы не перепродаём. Каждый пакетик микрозелени вырастили мы сами, в нашей ферме, под нашим контролем — с чистыми технологиями и любовью.</p>
+                    <p class="why__panelText">Мы не перепродаём. Каждый лоток микрозелени вырастили мы сами, в нашей ферме, под нашим контролем — с чистыми технологиями и любовью.</p>
                     <a href="#catalog" class="why__cta" aria-label="Перейти в каталог микрозелени">
                         Попробовать сейчас
                         <i class="ri-arrow-right-line why__ctaIcon" aria-hidden="true"></i>
@@ -418,14 +410,14 @@
 <section id="cooc" class="recipes">
     <div class="recipes__container">
         <div class="recipes__header">
-            <span class="recipes__pill">�?деи для кухни</span>
+            <span class="recipes__pill">Идеи для кухни</span>
             <h2 class="recipes__title">Готовим с микрозеленью</h2>
             <p class="recipes__subtitle">Простые и вкусные рецепты, которые превратят вашу кухню в маленький ресторан</p>
         </div>
         <div class="recipes__main">
             <div class="recipes__card" aria-live="polite">
                 <div class="recipes__media">
-                    <img alt="Сэндвич с редисом и творожным сыром" class="recipes__img" src="https://readdy.ai/api/search-image?query=artisan%20sandwich%20with%20radish%20microgreens%20cream%20cheese%20sourdough%20bread%20cucumber%20red%20onion%20close%20up%20food%20photography%20natural%20light%20rustic%20wooden%20board%20fresh%20vibrant%20colors&amp;width=800&amp;height=600&amp;seq=recipe3&amp;orientation=landscape">
+                    <img alt="Сэндвич с редисом и творожным сыром" class="recipes__img" src="./images/b97422bef2b4c9c4a3cbbf623dfb6ea3.jpg">
                     <div class="recipes__gradient"></div>
                     <div class="recipes__tag recipes__tag--accent">Быстрый рецепт</div>
                     <div class="recipes__tag recipes__tag--glass">Сэндвичи</div>
@@ -457,7 +449,7 @@
                         <h3 class="recipes__recipeTitle">Сэндвич с редисом и творожным сыром</h3>
                         <p class="recipes__recipeDesc">Хрустящий сэндвич с пряными ростками редиса и нежным творожным сыром. Отличный вариант для быстрого завтрака или перекуса на ходу.</p>
                         <div class="recipes__ingredients">
-                            <h4 class="recipes__ingredientsTitle">�?нгредиенты</h4>
+                            <h4 class="recipes__ingredientsTitle">Ингредиенты</h4>
                             <ul class="recipes__ingredientsList">
                                 <li class="recipes__ingredientItem">
                                     <div class="recipes__ingredientIconWrap">
@@ -519,12 +511,22 @@
                     <button class="recipes__pageDot" type="button" aria-label="Рецепт 5"></button>
                 </div>
                 <div class="recipes__navRow">
-                    <button type="button" class="recipes__navBtn" aria-label="Предыдущий рецепт" aria-controls="cooc">
+                    <button
+                        type="button"
+                        class="recipes__navBtn"
+                        aria-label="Предыдущий рецепт"
+                        aria-controls="cooc"
+                    >
                         <div class="recipes__navIconWrap">
                             <i class="ri-arrow-left-line recipes__navIcon" aria-hidden="true"></i>
                         </div>
                     </button>
-                    <button type="button" class="recipes__navBtn" aria-label="Следующий рецепт" aria-controls="cooc">
+                    <button
+                        type="button"
+                        class="recipes__navBtn"
+                        aria-label="Следующий рецепт"
+                        aria-controls="cooc"
+                    >
                         <div class="recipes__navIconWrap">
                             <i class="ri-arrow-right-line recipes__navIcon" aria-hidden="true"></i>
                         </div>
@@ -535,8 +537,25 @@
         </div>
     </div>
 </section>
-
 @push('scripts')
+@php
+    $sliderSlides = ($sliderRecipes ?? collect())->map(function ($r) {
+        return [
+            'imgSrc' => $r->image_url ?? '',
+            'imgAlt' => $r->title ?? '',
+            'tagAccent' => $r->tag_top ?? '',
+            'tagGlass' => $r->tag_bottom ?? '',
+            'meta' => [
+                (string) ($r->time_label ?? ''),
+                (string) ($r->calories_label ?? ''),
+                (string) ($r->difficulty_label ?? ''),
+            ],
+            'title' => $r->title ?? '',
+            'desc' => $r->excerpt ?? '',
+            'ingredients' => $r->ingredients ?? [],
+        ];
+    })->values();
+@endphp
 <script>
         (function () {
             const section = document.getElementById('cooc');
@@ -559,99 +578,9 @@
             const prevBtn = navButtons[0];
             const nextBtn = navButtons[1];
 
-            // 5 статических слайдов: переключаем контент в одной карточке.
-            // Если позже появится динамический список рецептов из БД — можно будет заменить этот массив.
-            const slides = [
-                {
-                    imgSrc: 'https://readdy.ai/api/search-image?query=artisan%20sandwich%20with%20peas%20microgreens%20green%20salsa%20bread%20close%20up%20food%20photography%20natural%20light%20rustic%20wooden%20board%20fresh%20vibrant%20colors&width=800&height=600&seq=recipe1&orientation=landscape',
-                    imgAlt: 'Сэндвич с горохом и микрозеленью',
-                    tagAccent: '�?дея за 10 минут',
-                    tagGlass: 'Сэндвичи',
-                    meta: ['10 мин', '260 ккал', 'Легко'],
-                    title: 'Сэндвич с горохом и зеленью',
-                    desc: 'Хрустящий хлеб и ароматные ростки гороха — быстрый вариант для завтрака и перекуса.',
-                    ingredients: [
-                        'Микрозелень гороха FITAHATA — 30 г',
-                        'Хлеб на закваске — 2 ломтика',
-                        'Сливочный сыр — 60 г',
-                        'Огурец — 1/2 шт',
-                        'Зелёный лук — несколько колец',
-                        'Лимонный перец — по вкусу',
-                    ],
-                },
-                {
-                    imgSrc: 'https://readdy.ai/api/search-image?query=artisan%20sandwich%20with%20broccoli%20microgreens%20cream%20cheese%20sourdough%20bread%20cucumber%20red%20onion%20close%20up%20food%20photography%20natural%20light%20rustic%20wooden%20board%20fresh%20vibrant%20colors&width=800&height=600&seq=recipe2&orientation=landscape',
-                    imgAlt: 'Сэндвич с брокколи и микрозеленью',
-                    tagAccent: 'Сытный рецепт',
-                    tagGlass: 'Сэндвичи',
-                    meta: ['12 мин', '310 ккал', 'Средне'],
-                    title: 'Сэндвич с брокколи и сливочным сыром',
-                    desc: 'Насыщенный вкус брокколи-микрозелени и сливочного сыра — для плотного и полезного перекуса.',
-                    ingredients: [
-                        'Микрозелень брокколи FITAHATA — 30 г',
-                        'Хлеб на закваске — 2 ломтика',
-                        'Сливочный сыр — 60 г',
-                        'Огурец — 1/2 шт',
-                        'Красный лук — несколько колец',
-                        'Перец и соль — по вкусу',
-                    ],
-                },
-                // Текущий контент из разметки будет совпадать с 3-м слайдом по умолчанию.
-                {
-                    imgSrc: imgEl?.getAttribute('src') || '',
-                    imgAlt: imgEl?.getAttribute('alt') || 'Рецепт с микрозеленью',
-                    tagAccent: accentTag?.textContent?.trim() || 'Быстрый рецепт',
-                    tagGlass: glassTag?.textContent?.trim() || 'Сэндвичи',
-                    meta: metaTexts.map((n) => n.textContent.trim()).slice(0, 3),
-                    title: titleEl?.textContent?.trim() || 'Сэндвич с редисом и творожным сыром',
-                    desc: descEl?.textContent?.trim() || '',
-                    ingredients: [
-                        'Микрозелень редиса FITAHATA — 30 г',
-                        'Хлеб на закваске — 2 ломтика',
-                        'Творожный сыр — 60 г',
-                        'Огурец — 1/2 шт',
-                        'Красный лук — несколько колец',
-                        'Лимонный перец — по вкусу',
-                    ],
-                },
-                {
-                    imgSrc: 'https://readdy.ai/api/search-image?query=artisan%20sandwich%20with%20sunflower%20microgreens%20cream%20cheese%20sourdough%20bread%20cucumber%20red%20onion%20close%20up%20food%20photography%20natural%20light%20rustic%20wooden%20board%20fresh%20vibrant%20colors&width=800&height=600&seq=recipe4&orientation=landscape',
-                    imgAlt: 'Сэндвич с подсолнечником и микрозеленью',
-                    tagAccent: 'Рецепт дня',
-                    tagGlass: 'Сэндвичи',
-                    meta: ['8 мин', '280 ккал', 'Очень легко'],
-                    title: 'Сэндвич с подсолнечником',
-                    desc: 'Тонкий вкус и лёгкий аромат микрозелени — идеальный вариант на скорую руку.',
-                    ingredients: [
-                        'Микрозелень подсолнечника FITAHATA — 30 г',
-                        'Хлеб на закваске — 2 ломтика',
-                        'Творожный сыр — 60 г',
-                        'Огурец — 1/2 шт',
-                        'Красный лук — несколько колец',
-                        'Перец — по вкусу',
-                    ],
-                },
-                {
-                    imgSrc: 'https://readdy.ai/api/search-image?query=artisan%20sandwich%20with%20radish%20microgreens%20herb%20sauce%20sourdough%20bread%20cucumber%20close%20up%20food%20photography%20natural%20light%20rustic%20wooden%20board%20fresh%20vibrant%20colors&width=800&height=600&seq=recipe5&orientation=landscape',
-                    imgAlt: 'Сэндвич с редисом и микрозеленью',
-                    tagAccent: 'Лёгкая закуска',
-                    tagGlass: 'Сэндвичи',
-                    meta: ['6 мин', '240 ккал', 'Легко'],
-                    title: 'Быстрый сэндвич с ростками редиса',
-                    desc: 'Свежие ростки редиса и зелёная нотка — чтобы быстро зарядиться энергией.',
-                    ingredients: [
-                        'Микрозелень редиса FITAHATA — 30 г',
-                        'Хлеб на закваске — 2 ломтика',
-                        'Сливочный сыр — 60 г',
-                        'Огурец — 1/2 шт',
-                        'Зелёный лук — несколько колец',
-                        'Лимонный перец — по вкусу',
-                    ],
-                },
-            ];
+            const slides = @json($sliderSlides);
 
-            let index = dots.findIndex((b) => b.classList.contains('recipes__pageDot--active'));
-            if (index < 0) index = 0;
+            let index = 0;
 
             function setActiveDot(nextIndex) {
                 dots.forEach((btn, i) => {

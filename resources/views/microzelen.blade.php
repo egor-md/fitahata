@@ -66,9 +66,9 @@
                         </div>
                     @endif
                     <div class="test-card-product__desc">
-                        {!! $plant->description !!}
+                        {!! nl2br(e((string) $plant->description)) !!}
                         @if ($plant->dishes_text)
-                            {!! $plant->dishes_text !!}
+                            {!! nl2br(e((string) $plant->dishes_text)) !!}
                         @endif
                     </div>
                     @if ($plant->tags->isNotEmpty())
@@ -102,7 +102,16 @@
                                     <div class="test-card-product__price-was">
                                         {{ number_format((float) $plant->compare_at_price, 2, ',', ' ') }} BYN</div>
                                     @if ($plant->discount_label)
-                                        <span class="test-card-product__discount">{{ $plant->discount_label }}</span>
+                                        @php
+                                            $discountValue = trim((string) $plant->discount_label);
+                                            $discountClass = match ($discountValue) {
+                                                'Хит' => 'test-card-product__discount--hit',
+                                                'Новинка' => 'test-card-product__discount--new',
+                                                'Выгода' => 'test-card-product__discount--deal',
+                                                default => '',
+                                            };
+                                        @endphp
+                                        <span class="test-card-product__discount {{ $discountClass }}">{{ $plant->discount_label }}</span>
                                     @endif
                                 </div>
                             @endif
@@ -111,7 +120,7 @@
                             <div class="test-card-product__qty" role="group" aria-label="Количество">
                                 <button type="button" class="test-card-product__qty-btn" aria-label="Уменьшить"><i
                                         class="ri-subtract-line"></i></button>
-                                <span class="test-card-product__qty-val">10</span>
+                                <span class="test-card-product__qty-val">1</span>
                                 <button type="button" class="test-card-product__qty-btn" aria-label="Увеличить"><i
                                         class="ri-add-line"></i></button>
                             </div>

@@ -111,7 +111,7 @@ class PlantController extends Controller
             'price' => ['required', 'numeric', 'min:0'],
             'price_unit_label' => ['nullable', 'string', 'max:255'],
             'compare_at_price' => ['nullable', 'numeric', 'min:0'],
-            'discount_label' => ['nullable', 'string', 'max:255'],
+            'discount_label' => ['nullable', 'string', Rule::in(['Хит', 'Новинка', 'Выгода'])],
             'growing_period_label' => ['nullable', 'string', 'max:255'],
             'category_label' => ['nullable', 'string', 'max:255'],
             'sku' => ['nullable', 'string', 'max:255'],
@@ -160,6 +160,18 @@ class PlantController extends Controller
 
         $validated['is_visible'] = $request->boolean('is_visible');
         $validated['is_bestseller'] = $request->boolean('is_bestseller');
+        foreach ([
+            'description',
+            'dishes_text',
+            'nutrition_section_lead',
+            'nutrition_tip_text',
+            'recipes_section_lead',
+            'meta_description',
+        ] as $textField) {
+            if (array_key_exists($textField, $validated)) {
+                $validated[$textField] = $this->sanitizePlainText($validated[$textField] ?? null);
+            }
+        }
 
         $images = $validated['images'] ?? [];
         foreach ($images as $i => &$img) {
@@ -236,5 +248,19 @@ class PlantController extends Controller
                 'sort_order' => (int) ($row['sort_order'] ?? 0),
             ]);
         }
+    }
+
+    private function sanitizePlainText(?string $value): ?string
+    {
+        if ($value === null) {
+            return null;
+        }
+
+        $normalized = preg_replace('/\r\n?/', "\n", $value) ?? $value;
+        $normalized = preg_replace('/<\s*br\s*\/?>/i', "\n", $normalized) ?? $normalized;
+        $normalized = preg_replace('/<\/p>\s*<p>/i', "\n\n", $normalized) ?? $normalized;
+        $plain = trim(strip_tags($normalized));
+
+        return $plain === '' ? null : $plain;
     }
 }

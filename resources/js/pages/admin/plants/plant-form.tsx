@@ -74,12 +74,47 @@ const NUTRITION_SECTIONS = [
     { value: 'antioxidants', label: 'Антиоксиданты' },
 ];
 
+const DISCOUNT_LABEL_OPTIONS = [
+    {
+        value: '',
+        label: 'Без плашки',
+        chipClass: 'bg-muted text-muted-foreground',
+    },
+    {
+        value: 'Хит',
+        label: 'Хит',
+        chipClass:
+            'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300',
+    },
+    {
+        value: 'Новинка',
+        label: 'Новинка',
+        chipClass:
+            'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300',
+    },
+    {
+        value: 'Выгода',
+        label: 'Выгода',
+        chipClass:
+            'bg-sky-100 text-sky-800 dark:bg-sky-900/30 dark:text-sky-300',
+    },
+] as const;
+
 function emptyFacts(): FactRow[] {
     return [
         { icon: '', title: '', sub: '' },
         { icon: '', title: '', sub: '' },
         { icon: '', title: '', sub: '' },
     ];
+}
+
+function plainText(value: string | null | undefined): string {
+    if (!value) return '';
+    return value
+        .replace(/<\s*br\s*\/?>/gi, '\n')
+        .replace(/<\/p>\s*<p>/gi, '\n\n')
+        .replace(/<[^>]*>/g, '')
+        .trim();
 }
 
 function mapPlantToForm(p: Plant) {
@@ -110,8 +145,8 @@ function mapPlantToForm(p: Plant) {
         slug: p.slug,
         kind: p.kind,
         is_visible: p.is_visible,
-        description: p.description ?? '',
-        dishes_text: p.dishes_text ?? '',
+        description: plainText(p.description),
+        dishes_text: plainText(p.dishes_text),
         price: String(p.price),
         price_unit_label: p.price_unit_label ?? 'за 50 г',
         compare_at_price:
@@ -127,13 +162,13 @@ function mapPlantToForm(p: Plant) {
         reviews_count: p.reviews_count ?? 0,
         facts,
         nutrition_section_title: p.nutrition_section_title ?? '',
-        nutrition_section_lead: p.nutrition_section_lead ?? '',
-        nutrition_tip_text: p.nutrition_tip_text ?? '',
+        nutrition_section_lead: plainText(p.nutrition_section_lead),
+        nutrition_tip_text: plainText(p.nutrition_tip_text),
         recipes_section_pill: p.recipes_section_pill ?? '',
         recipes_section_title: p.recipes_section_title ?? '',
-        recipes_section_lead: p.recipes_section_lead ?? '',
+        recipes_section_lead: plainText(p.recipes_section_lead),
         meta_title: p.meta_title ?? '',
-        meta_description: p.meta_description ?? '',
+        meta_description: plainText(p.meta_description),
         images,
         tag_ids: p.tags?.map((t) => t.id) ?? [],
         nutrition_items: nutrition,
@@ -358,7 +393,7 @@ export function AdminPlantForm({
                             Показывать на сайте
                         </label>
                         <div className="space-y-2">
-                            <Label htmlFor="description">Описание (HTML)</Label>
+                            <Label htmlFor="description">Описание</Label>
                             <textarea
                                 id="description"
                                 value={data.description}
@@ -440,9 +475,9 @@ export function AdminPlantForm({
                             </div>
                             <div className="space-y-2">
                                 <Label htmlFor="discount_label">
-                                    Плашка скидки
+                                    Плашка
                                 </Label>
-                                <Input
+                                <select
                                     id="discount_label"
                                     value={data.discount_label}
                                     onChange={(e) =>
@@ -451,7 +486,30 @@ export function AdminPlantForm({
                                             e.target.value,
                                         )
                                     }
-                                />
+                                    className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm"
+                                >
+                                    {DISCOUNT_LABEL_OPTIONS.map((option) => (
+                                        <option
+                                            key={option.value || 'empty'}
+                                            value={option.value}
+                                        >
+                                            {option.label}
+                                        </option>
+                                    ))}
+                                </select>
+                                <div className="flex flex-wrap items-center gap-2 pt-1">
+                                    {DISCOUNT_LABEL_OPTIONS.filter(
+                                        (x) => x.value !== '',
+                                    ).map((option) => (
+                                        <span
+                                            key={option.value}
+                                            className={`inline-flex rounded-full px-2.5 py-1 text-xs font-medium ${option.chipClass}`}
+                                        >
+                                            {option.label}
+                                        </span>
+                                    ))}
+                                </div>
+                                <InputError message={errors.discount_label} />
                             </div>
                         </div>
                         <div className="grid gap-4 sm:grid-cols-2">
@@ -859,7 +917,7 @@ export function AdminPlantForm({
                         )}
                     </fieldset>
 
-                    <div className="flex gap-2">
+                    <div className="save_fixed flex gap-2" style={{'position':'fixed',  'bottom': '16px', 'right': '20px'}}>
                         <Button type="submit" disabled={processing}>
                             Сохранить
                         </Button>

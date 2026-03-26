@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
 <head>
@@ -37,7 +37,7 @@
             <div class="site-nav-left">
                 <a href="{{ route('home') }}" class="site-logo-link" aria-label="FITAHATA — на главную">
                     <div class="site-logo-wrap">
-                        <img src="/images/logo-min.webp" alt="Логотип FITAHATA" width="277" height="120">
+                        <img src="/images/logo-min.webp" alt="Логотип FITAHATA">
                     </div>
                 </a>
             </div>
@@ -69,6 +69,7 @@
                             @endforeach
                         </div>
                     </div>
+                    {{-- Публичный вход/профиль скрыт: доступ в админку только по прямой ссылке /login --}}
                     <a href="{{ route('contacts') }}" class="menu-link {{ request()->routeIs('contacts') ? 'active' : '' }}">
                         Контакты
                     </a>
@@ -222,6 +223,8 @@
             });
         })();
     </script>
+
+    {{-- JS для login/profile dropdown отключен вместе с публичным входом --}}
 </body>
 
 </html>

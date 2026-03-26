@@ -4,7 +4,6 @@
 @section('meta_description', 'Контакты FITAHATA в Гомеле: адрес, телефон, email, карта и форма обратной связи.')
 
 @section('content')
-    {{-- Герой: тёмный блок, отступ сверху под absolute header задаётся в CSS --}}
     <section class="contacts-hero" aria-labelledby="contacts-heading">
         <div class="site-container contacts-hero__inner">
             <div class="contacts-hero__badge">
@@ -23,7 +22,6 @@
         </div>
     </section>
 
-    {{-- Карточки: адрес, телефон, email, время --}}
     <section class="contacts-cards-section" aria-label="Контактные данные">
         <div class="site-container">
             <div class="contacts-cards">

@@ -7,8 +7,11 @@ use App\Http\Controllers\PublicController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [PublicController::class, 'home'])->name('home');
+Route::get('/catalog', [PublicController::class, 'catalog'])->name('catalog');
 Route::get('/contacts', [PublicController::class, 'contacts'])->name('contacts');
 Route::get('/article/{slug}', [PublicController::class, 'show'])->name('article.show');
+
+// Публичный Google-вход отключен. Авторизация в админку — только по прямой ссылке /login.
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::inertia('dashboard', 'dashboard')->name('dashboard');

@@ -103,10 +103,29 @@ class RecipeController extends Controller
         $recipePayload = collect($validated)->except(['plant_ids'])->all();
         $recipePayload['sort_order'] = (int) ($recipePayload['sort_order'] ?? 0);
         $recipePayload['ingredients'] = array_values($recipePayload['ingredients'] ?? []);
+        foreach (['excerpt', 'body'] as $textField) {
+            if (array_key_exists($textField, $recipePayload)) {
+                $recipePayload[$textField] = $this->sanitizePlainText($recipePayload[$textField] ?? null);
+            }
+        }
 
         return [
             'recipe' => $recipePayload,
             'plant_ids' => $plantIds,
         ];
+    }
+
+    private function sanitizePlainText(?string $value): ?string
+    {
+        if ($value === null) {
+            return null;
+        }
+
+        $normalized = preg_replace('/\r\n?/', "\n", $value) ?? $value;
+        $normalized = preg_replace('/<\s*br\s*\/?>/i', "\n", $normalized) ?? $normalized;
+        $normalized = preg_replace('/<\/p>\s*<p>/i', "\n\n", $normalized) ?? $normalized;
+        $plain = trim(strip_tags($normalized));
+
+        return $plain === '' ? null : $plain;
     }
 }

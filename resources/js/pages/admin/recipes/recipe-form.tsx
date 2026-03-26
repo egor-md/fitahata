@@ -33,6 +33,15 @@ type Recipe = {
     plants?: PlantOpt[];
 };
 
+function plainText(value: string | null | undefined): string {
+    if (!value) return '';
+    return value
+        .replace(/<\s*br\s*\/?>/gi, '\n')
+        .replace(/<\/p>\s*<p>/gi, '\n\n')
+        .replace(/<[^>]*>/g, '')
+        .trim();
+}
+
 function mapRecipe(r: Recipe) {
     return {
         title: r.title,
@@ -43,8 +52,8 @@ function mapRecipe(r: Recipe) {
         difficulty_label: r.difficulty_label ?? '',
         tag_top: r.tag_top ?? '',
         tag_bottom: r.tag_bottom ?? '',
-        excerpt: r.excerpt ?? '',
-        body: r.body ?? '',
+        excerpt: plainText(r.excerpt),
+        body: plainText(r.body),
         ingredients:
             r.ingredients && r.ingredients.length > 0 ? r.ingredients : [''],
         cta_label: r.cta_label ?? '',

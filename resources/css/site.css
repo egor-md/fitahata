@@ -45,6 +45,14 @@ body {
   background: var(--color-bg);
 }
 
+section {
+    padding: 100px 0;
+}
+
+nav.site-nav.site-container {
+    padding-top: 16px;
+}
+
 body.is-menu-open {
   overflow: hidden;
 }
@@ -53,6 +61,12 @@ img {
   max-width: 100%;
   display: block;
 }
+
+a {
+  text-decoration: none;
+}
+
+
 
 /* Layout */
 
@@ -76,7 +90,7 @@ header.site-header {
 
 
 .site-logo-wrap {
-  width: 277px;
+  width: 200px;
 }
 
 .site-footer {
@@ -95,7 +109,7 @@ header.site-header {
 }
 
 .site-main {
-  padding: 0 0 40px;
+  padding: 0;
 }
 
 /* Top navigation */
@@ -104,7 +118,14 @@ header.site-header {
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  padding: 10px 0;
+  padding: 20px 30px;
+}
+
+
+.save_fixed {
+  position: fixed;
+  bottom: 16px;
+  right: 20px;
 }
 
 .site-nav-left {
@@ -254,7 +275,7 @@ header.site-header {
 /* Home hero */
 .home-hero {
   padding: 180px 0 52px;
-  background: linear-gradient(to right, var(--color-bg-soft) 50%, palegoldenrod 50%);
+  /* background: linear-gradient(to right, var(--color-bg-soft) 50%, palegoldenrod 50%); */
   margin: 26px 42px;
   border-radius: 50px;
 }
@@ -358,518 +379,8 @@ header.site-header {
 
 /* Home cooking  */
 
-section.cooking {
-  margin: 120px 42px;
-  border-radius: 50px;
-  /* background: linear-gradient(to right, #e8e6d7 33%, #ffffff 33%, #ffffff 67%, #e8e6d7 67%); */
-}
-
-.cooking-slider {
-  position: relative;
-  margin-top: 30px;
-}
-
-.cooking-slider-viewport {
-  overflow: hidden;
-}
-
-.cooking-slider-track {
-  display: flex;
-  gap: 5px;
-  transition: transform 240ms ease;
-  will-change: transform;
-}
-
-.cooking-slide {
-  /* width per slide based on how many should be visible */
-  flex: 0 0 calc(100% / var(--cooking-visible, 4));
-}
-
-.cooking-slider-arrow {
-  position: absolute;
-  top: 42%;
-  transform: translateY(-50%);
-  width: 44px;
-  height: 44px;
-  border-radius: 999px;
-  border: 1px solid var(--color-border);
-  background: #ffffff;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 5;
-}
-
-.cooking-slider-arrowIcon {
-  width: 20px;
-  height: 20px;
-}
-
-.cooking-slider-arrow--left {
-  left: -60px;
-}
-
-.cooking-slider-arrow--right {
-  right: -60px;
-}
-
-.cooking-slider-dots {
-  display: flex;
-  justify-content: center;
-  gap: 8px;
-  margin-top: 14px;
-}
-
-.cooking-slider-dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 999px;
-  border: 1px solid var(--color-border);
-  background: #ffffff;
-  cursor: pointer;
-}
-
-.cooking-slider-dot.is-active {
-  background: var(--color-accent);
-  border-color: var(--color-accent);
-}
-
-.cooking-slider .cooking-card-i {
-  width: 100%;
-}
-
-.cooking-img-desc {
-  font-size: 22px;
-  color: #d37b00;
-}
-
-.cooking-card-w {
-  display: flex;
-  justify-content: space-between;
-  gap: 46px;
-  margin-top: 40px;
-}
-
-.cooking-text {
-  background: #fff;
-  padding: 20px;
-}
-
-.cooking-card-i {
-  width: 33%;
-}
-
-.h2-coocing-title {
-  margin: 0;
-  font-size: 60px;
-  line-height: 1;
-  font-weight: 600;
-  color: #3c2b21;
-}
-
-.cooking-img img {
-  width: 100%;
-}
-
-/* Article page */
-.article-page {
-  padding-top: 24px;
-  padding-bottom: 40px;
-}
-
-.article-title {
-  margin: 0 0 24px;
-  font-size: 30px;
-  font-weight: 600;
-}
-
-.article-content {
-  font-size: 16px;
-  line-height: 1.6;
-}
-
-h1,
-h2,
-h3 {
-  font-family: 'Nunito', sans-serif;
-}
-
-.article-h1,
-.article-h2,
-.article-h3 {
-  margin: 24px 0 16px;
-  font-weight: 600;
-}
-
-.article-h1 {
-  font-size: 26px;
-  font-family: "Nunito", sans-serif;
-}
-
-.article-h2 {
-  font-size: 22px;
-}
-
-.article-h3 {
-  font-size: 18px;
-}
-
-.article-text {
-  margin-bottom: 16px;
-  white-space: pre-wrap;
-}
-
-.article-figure {
-  margin: 24px 0;
-  text-align: center;
-}
-
-.article-image {
-  width: 100%;
-  border-radius: 12px;
-}
-
-.article-caption {
-  margin-top: 4px;
-  font-size: 13px;
-  color: var(--color-text-muted);
-}
-
-.article-gallery {
-  margin: 24px 0;
-  display: grid;
-  gap: 12px;
-}
-
-.article-gallery--cols-2 {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-}
-
-.article-gallery--cols-3 {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-}
-
-.article-galleryItem {
-  overflow: hidden;
-  border-radius: 12px;
-}
-
-.article-galleryImage {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.article-carousel {
-  margin: 24px 0;
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
-}
-
-.article-carouselItem {
-  border-radius: 12px;
-  overflow: hidden;
-}
-
-.article-carouselImage {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-/* Feature block */
-.feature {
-  margin: 32px 0;
-  padding: 16px;
-  border-radius: 16px;
-  border: 1px solid var(--color-border);
-  background: #ffffff;
-}
-
-.feature__grid {
-  display: grid;
-  gap: 16px;
-}
-
-.feature--oneThird .feature__grid {
-  grid-template-columns: 1fr 2fr;
-}
-
-.feature--half .feature__grid {
-  grid-template-columns: 1fr 1fr;
-}
-
-.feature__image {
-  width: 100%;
-  border-radius: 10px;
-  object-fit: cover;
-  aspect-ratio: 16 / 9;
-}
-
-.feature__imagePlaceholder {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 10px;
-  border: 1px dashed var(--color-border);
-  font-size: 12px;
-  color: var(--color-text-muted);
-  aspect-ratio: 16 / 9;
-}
-
-.feature__title {
-  margin: 0 0 8px;
-  font-size: 20px;
-  font-weight: 600;
-}
-
-.feature__price {
-  font-size: 18px;
-  font-weight: 600;
-  color: var(--color-accent-dark);
-}
-
-.feature__text {
-  margin-top: 4px;
-  font-size: 14px;
-  line-height: 1.6;
-  color: var(--color-text-muted);
-  white-space: pre-wrap;
-}
-
-/* Main info block */
-.main-info {
-  margin: 32px 0;
-  padding: 16px;
-  border: 1px solid var(--color-border);
-  border-radius: 16px;
-  background: #ffffff;
-  display: grid;
-  grid-template-columns: minmax(240px, 360px) 1fr;
-  gap: 20px;
-}
-
-.main-info__media {
-  min-width: 0;
-}
-
-.main-info__image {
-  width: 100%;
-  border-radius: 12px;
-  object-fit: cover;
-  aspect-ratio: 1 / 1;
-}
-
-.main-info__placeholder {
-  min-height: 220px;
-  border-radius: 12px;
-  border: 1px dashed var(--color-border);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--color-text-muted);
-  font-size: 13px;
-  text-align: center;
-  padding: 16px;
-}
-
-.main-info__title {
-  margin: 0 0 8px;
-  font-size: 28px;
-  line-height: 1.2;
-}
-
-.main-info__price {
-  margin: 0 0 14px;
-  color: var(--color-accent-dark);
-  font-weight: 700;
-  font-size: 20px;
-}
-
-.main-info__line {
-  margin: 0 0 8px;
-  font-size: 15px;
-  line-height: 1.5;
-}
-
-.main-info__line strong {
-  color: #1a1a1a;
-}
-
-.main-info__description {
-  margin: 10px 0 0;
-  white-space: pre-wrap;
-  color: var(--color-text-muted);
-}
-
-/* Simple responsiveness */
-@media (max-width: 768px) {
-  .home-hero-card {
-    grid-template-columns: 1fr;
-  }
-
-  .article-gallery--cols-2,
-  .article-gallery--cols-3,
-  .article-carousel {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .main-info {
-    grid-template-columns: 1fr;
-  }
-}
-
-/* Home benefits (right-side reference image) */
-.benefits {
-  padding: 40px 0 80px;
-  background: linear-gradient(90deg,
-      #f3ede1 0%,
-      #f3ede1 52%,
-      #d8dda0 52%,
-      #d8dda0 100%);
-}
-
-.benefits-grid {
-  display: grid;
-  grid-template-columns: 1fr 0.9fr;
-  gap: 24px;
-  align-items: center;
-}
-
-.benefits-title {
-  margin: 0 0 24px;
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: 56px;
-  line-height: 1.02;
-  font-weight: 500;
-  color: #3c2b21;
-}
-
-.benefits-items {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 18px 24px;
-}
-
-.benefits-item {
-  color: #2d2d2d;
-}
-
-.benefits-itemIcon {
-  width: 54px;
-  height: 54px;
-  margin-bottom: 10px;
-  color: #7a5b37;
-}
-
-.benefits-itemIcon svg {
-  width: 100%;
-  height: 100%;
-  display: block;
-}
-
-.benefits-itemTitle {
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: 18px;
-  font-weight: 600;
-  color: #6f4f2a;
-  margin-bottom: 6px;
-}
-
-.benefits-itemText {
-  font-size: 13px;
-  line-height: 1.4;
-  color: #6c5a47;
-}
-
-.benefits-right {
-  display: flex;
-  justify-content: flex-end;
-}
-
-.benefits-media {
-  width: 100%;
-  max-width: 520px;
-  height: 420px;
-  overflow: hidden;
-  border-radius: var(--radius-lg);
-  background: transparent;
-}
-
-.benefits-mediaImg {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  /* focus on the right microgreens part from the reference */
-  object-position: 92% 50%;
-}
-
-@media (max-width: 900px) {
-  .benefits-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .benefits-media {
-    max-width: none;
-    height: 320px;
-    border-radius: 20px;
-  }
-
-  .benefits-title {
-    font-size: 40px;
-  }
-}
-
-benefits-itemText {
-  font-size: 13px;
-  line-height: 1.4;
-  color: #6c5a47;
-}
-
-.benefits-right {
-  display: flex;
-  justify-content: flex-end;
-}
-
-.benefits-media {
-  width: 100%;
-  max-width: 520px;
-  height: 420px;
-  overflow: hidden;
-  border-radius: var(--radius-lg);
-  background: transparent;
-}
-
-.benefits-mediaImg {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  /* focus on the right microgreens part from the reference */
-  object-position: 92% 50%;
-}
-
-@media (max-width: 900px) {
-  .benefits-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .benefits-media {
-    max-width: none;
-    height: 320px;
-    border-radius: 20px;
-  }
-
-  .benefits-title {
-    font-size: 40px;
-  }
-}
-
 /* Subscription block (id="subscription") */
 .subscription {
-  padding: 96px 0;
-  /* py-24 */
   background: #ffffff;
 }
 
@@ -1194,19 +705,13 @@ benefits-itemText {
 .subscription__featureText {
   margin: 0;
   font-size: 14px;
-  /* text-sm */
   line-height: 1.6;
-  /* leading-relaxed */
   color: #6b6b6b;
-  /* text-[#6B6B6B] */
 }
 
 /* Catalog section */
 .catalog {
-  padding: 96px 0;
-  /* py-24 */
   background: #fafaf7;
-  /* bg-[#FAFAF7] */
 }
 
 .catalog__container {
@@ -1378,6 +883,21 @@ benefits-itemText {
   border-radius: 999px;
 }
 
+.catalog-card__badge--hit {
+  background: #f59e0b;
+  color: #fff;
+}
+
+.catalog-card__badge--new {
+  background: #16a34a;
+  color: #fff;
+}
+
+.catalog-card__badge--deal {
+  background: #2563eb;
+  color: #fff;
+}
+
 .catalog-card__body {
   padding: 16px;
   /* p-4 */
@@ -1447,13 +967,11 @@ benefits-itemText {
 .catalog__bottom {
   text-align: center;
   margin-top: 48px;
-  /* mt-12 */
 }
 
 .catalog__bottomText {
   margin: 0 0 16px;
   font-size: 14px;
-  /* text-sm */
   color: #6b6b6b;
 }
 
@@ -1463,9 +981,7 @@ benefits-itemText {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  /* gap-2 */
   padding: 12px 24px;
-  /* px-6 py-3 */
   border-radius: 999px;
   background: #f5f1e8;
   color: #2d5016;
@@ -1482,8 +998,6 @@ benefits-itemText {
 
 /* Benefits section */
 .benefits {
-  padding: 96px 0;
-  /* py-24 */
   background: #ffffff;
 }
 
@@ -1695,7 +1209,6 @@ benefits-itemText {
 
 /* Delivery section */
 .delivery {
-  padding: 96px 0;
   background: #fafaf7;
 }
 
@@ -1929,8 +1442,6 @@ benefits-itemText {
 
 /* Why section */
 .why {
-  padding: 96px 0;
-  /* py-24 */
   background: #ffffff;
 }
 
@@ -2251,7 +1762,6 @@ benefits-itemText {
 
 .why__cta:hover {
   background: #f5f1e8;
-  /* hover:bg-[#F5F1E8] */
 }
 
 .why__ctaIcon {
@@ -2260,8 +1770,6 @@ benefits-itemText {
 
 /* Recipes section */
 .recipes {
-  padding: 96px 0;
-  /* py-24 */
   background: #f5f1e8;
   overflow: hidden;
 }
@@ -2275,32 +1783,25 @@ benefits-itemText {
 @media (min-width: 1024px) {
   .recipes__container {
     padding: 0 48px;
-    /* lg:px-12 */
   }
 }
 
 .recipes__header {
   text-align: center;
   margin-bottom: 64px;
-  /* mb-16 */
 }
 
 .recipes__pill {
   display: inline-block;
   background: rgba(74, 124, 42, 0.1);
-  /* bg-[#4A7C2A]/10 */
   color: #4a7c2a;
   font-size: 12px;
-  /* text-xs */
   font-weight: 600;
   letter-spacing: 0.16em;
-  /* tracking-widest */
   text-transform: uppercase;
   padding: 6px 16px;
-  /* px-4 py-1.5 */
   border-radius: 999px;
   margin-bottom: 16px;
-  /* mb-4 */
 }
 
 .recipes__title {
@@ -2339,7 +1840,7 @@ benefits-itemText {
   grid-template-columns: 1fr;
   background: #ffffff;
   border-radius: 24px;
-  /* rounded-3xl */
+  min-height: 600px;
   overflow: hidden;
   gap: 0;
   opacity: 1;
@@ -2527,6 +2028,10 @@ benefits-itemText {
   /* gap-2 */
   font-size: 14px;
   color: #5a6b4a;
+}
+
+section {
+    padding: 60px 0;
 }
 
 .recipes__ingredientIconWrap {
@@ -3048,7 +2553,6 @@ benefits-itemText {
 .home-footer__input::placeholder,
 .home-footer__textarea::placeholder {
   color: #b5baa8;
-  /* placeholder-[#B5BAA8] */
 }
 
 .home-footer__input:focus,
@@ -3161,7 +2665,6 @@ benefits-itemText {
     flex-direction: row;
   }
 
-
   .home-hero-title {
     font-size: 36px;
   }
@@ -3180,13 +2683,20 @@ benefits-itemText {
 
 
   .site-logo-wrap {
-    width: 200px;
+    width: 164px;
     padding-left: 12px;
   }
 
 
+  nav.site-nav.site-container {
+    padding-top: 10px;
+}
+
+
   .home-hero-card {
     padding: 20px 0;
+    display: flex;
+    flex-direction: column;
   }
 }
 
@@ -4097,13 +3607,13 @@ a.catalog__allBtn {
 /* ---------- Страница microzelen / карточка культуры (без Tailwind) ---------- */
 
 .test-card-product {
-  padding-top: clamp(88px, 14vw, 120px);
+  padding-top: clamp(88px, 14vw, 200px);
   padding-bottom: 64px;
   background: #fafaf7;
 }
 
 .test-card-product__inner {
-    max-width: var(--page-max-width);
+  max-width: var(--page-max-width);
 }
 
 .test-card-product__grid {
@@ -4393,6 +3903,21 @@ a.catalog__allBtn {
   border-radius: 999px;
   background: #fef3c7;
   color: #92400e;
+}
+
+.test-card-product__discount--hit {
+  background: #f59e0b;
+  color: #fff;
+}
+
+.test-card-product__discount--new {
+  background: #16a34a;
+  color: #fff;
+}
+
+.test-card-product__discount--deal {
+  background: #2563eb;
+  color: #fff;
 }
 
 .test-card-product__buy-row {
@@ -5292,11 +4817,21 @@ a.catalog__allBtn {
   }
 }
 
+.site-nav {
+  padding: 0;
+}
+
 .test-card-sub__feat {
   background: #fafaf7;
   border-radius: 16px;
   padding: 20px;
 }
+
+
+main.site-main {
+    margin-top: -20px;
+}
+
 
 .test-card-sub__feat-icon {
   width: 36px;
