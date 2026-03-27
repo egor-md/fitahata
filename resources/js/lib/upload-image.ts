@@ -10,7 +10,10 @@ function getCsrfToken(): string {
     return meta?.content?.trim() ?? '';
 }
 
-export function uploadImage(file: File): Promise<string> {
+export function uploadImage(
+    file: File,
+    collection: 'plants' | 'recipes' = 'plants',
+): Promise<string> {
     if (file.size > MAX_FILE_SIZE_BYTES) {
         return Promise.reject(
             new Error(
@@ -26,6 +29,7 @@ export function uploadImage(file: File): Promise<string> {
     const formData = new FormData();
     formData.append('_token', token);
     formData.append('image', file, file.name || 'image');
+    formData.append('collection', collection);
 
     const url = '/admin/upload-image';
 

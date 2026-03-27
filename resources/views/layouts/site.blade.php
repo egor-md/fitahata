@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
 <head>
@@ -28,6 +28,7 @@
     <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@4.6.0/fonts/remixicon.css" rel="stylesheet">
     @vite(['resources/css/site.css'])
+    @vite(['resources/css/custom_css.css'])
     @stack('styles')
 </head>
 
@@ -105,7 +106,7 @@
                             <a href="#" aria-label="Instagram" class="home-footer__socialLink"><i class="ri-instagram-line home-footer__socialIcon" aria-hidden="true"></i></a>
                             <a href="#" aria-label="Telegram" class="home-footer__socialLink"><i class="ri-telegram-line home-footer__socialIcon" aria-hidden="true"></i></a>
                             <a href="#" aria-label="ВКонтакте" class="home-footer__socialLink"><i class="ri-vk-line home-footer__socialIcon" aria-hidden="true"></i></a>
-                            <a href="#" aria-label="WhatsApp" class="home-footer__socialLink"><i class="ri-whatsapp-line home-footer__socialIcon" aria-hidden="true"></i></a>
+                            <a href="https://t.me/m93458" target="_blank" rel="nofollow noopener noreferrer" aria-label="Telegram" class="home-footer__socialLink"><i class="ri-telegram-line home-footer__socialIcon" aria-hidden="true"></i></a>
                         </div>
 
                         <nav class="home-footer__nav" aria-label="Навигация">
@@ -131,7 +132,7 @@
                     <div class="home-footer__col home-footer__col--form">
                         <h3 class="home-footer__sectionTitle home-footer__sectionTitle--form"><span class="home-footer__sectionIcon" aria-hidden="true"><i class="ri-mail-send-line" aria-hidden="true"></i></span>Написать нам</h3>
                         <p class="home-footer__formDesc">Есть вопросы о продукте или хотите оформить крупный заказ? Мы ответим быстро.</p>
-                        <form data-readdy-form="true" class="home-footer__form">
+                        <form data-readdy-form="true" data-fitahata-form="true" data-form-type="footer" class="home-footer__form">
                             <div class="home-footer__formGrid">
                                 <div class="home-footer__field"><label for="footer-name" class="home-footer__label">Имя *</label><input id="footer-name" required placeholder="Ваше имя" class="home-footer__input" type="text" name="name"></div>
                                 <div class="home-footer__field"><label for="footer-phone" class="home-footer__label">Телефон *</label><input id="footer-phone" required placeholder="+375 (29) ___-__-__" class="home-footer__input" type="tel" name="phone"></div>
@@ -144,6 +145,7 @@
                                 <p class="home-footer__consent">Нажимая кнопку, вы соглашаетесь с <a href="#" class="home-footer__policyLink">политикой конфиденциальности</a></p>
                                 <button type="submit" class="home-footer__submitBtn"><span class="home-footer__submitIcon" aria-hidden="true"><i class="ri-send-plane-line" aria-hidden="true"></i></span>Отправить</button>
                             </div>
+                            <p data-form-status class="text-sm"></p>
                         </form>
                     </div>
                 </div>
@@ -220,6 +222,56 @@
                 } else if (!menu.classList.contains('site-nav-right--open')) {
                     menu.setAttribute('aria-hidden', 'true');
                 }
+            });
+        })();
+
+        (function () {
+            var forms = document.querySelectorAll('[data-fitahata-form="true"]');
+            if (!forms.length) return;
+
+            function setStatus(form, message, isError) {
+                var status = form.querySelector('[data-form-status]');
+                if (!status) return;
+                status.textContent = message || '';
+                status.className = 'text-sm ' + (isError ? 'text-red-600' : 'text-green-600');
+            }
+
+            forms.forEach(function (form) {
+                form.addEventListener('submit', async function (event) {
+                    event.preventDefault();
+
+                    var submitButton = form.querySelector('[type="submit"]');
+                    if (submitButton) submitButton.disabled = true;
+                    setStatus(form, '', false);
+
+                    try {
+                        var formData = new FormData(form);
+                        formData.append('form_type', form.getAttribute('data-form-type') || '');
+                        formData.append('page_url', window.location.href);
+
+                        var payload = Object.fromEntries(formData.entries());
+                        var response = await fetch('{{ route('forms.submit') }}', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Accept': 'application/json',
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                            },
+                            body: JSON.stringify(payload)
+                        });
+                        var result = await response.json();
+                        if (!response.ok) {
+                            throw new Error(result.message || 'Не удалось отправить форму.');
+                        }
+
+                        form.reset();
+                        setStatus(form, 'Сообщение отправлено в Telegram.', false);
+                    } catch (error) {
+                        setStatus(form, error.message || 'Ошибка отправки.', true);
+                    } finally {
+                        if (submitButton) submitButton.disabled = false;
+                    }
+                });
             });
         })();
     </script>

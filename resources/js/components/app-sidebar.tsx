@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { Link, usePage } from '@inertiajs/react';
-import { BookOpen, ChefHat, FolderGit2, LayoutGrid, Sprout } from 'lucide-react';
+import { BookOpen, ChefHat, FolderGit2, LayoutGrid, ShoppingCart, Sprout } from 'lucide-react';
 import AppLogo from '@/components/app-logo';
 import { NavFooter } from '@/components/nav-footer';
 import { NavMain } from '@/components/nav-main';
@@ -14,6 +14,7 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
+import { index as adminOrdersIndex } from '@/routes/admin/orders';
 import { edit as adminPlantEdit, index as adminPlantsIndex } from '@/routes/admin/plants';
 import { index as adminRecipesIndex } from '@/routes/admin/recipes';
 import { dashboard } from '@/routes';
@@ -59,6 +60,11 @@ export function AppSidebar() {
                 href: adminPlantsIndex.url(),
                 icon: Sprout,
                 children: plantChildren,
+            },
+            {
+                title: 'Заказы',
+                href: adminOrdersIndex.url(),
+                icon: ShoppingCart,
             },
             {
                 title: 'Готовим',

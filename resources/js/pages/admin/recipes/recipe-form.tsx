@@ -144,7 +144,7 @@ export function AdminRecipeForm({
         setCropFile(null);
         setUploading(true);
         try {
-            const url = await uploadImage(croppedFile);
+            const url = await uploadImage(croppedFile, 'recipes');
             setData('image_url', url);
         } finally {
             setUploading(false);

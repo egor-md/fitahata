@@ -22,7 +22,7 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->configureDefaults();
 
-        View::composer('layouts.site', function ($view) {
+        View::composer(['layouts.site', 'layouts.shop'], function ($view) {
             $view->with('menuPlants', Plant::query()
                 ->where('is_visible', true)
                 ->orderBy('name')

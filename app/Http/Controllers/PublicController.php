@@ -2,8 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Order;
 use App\Models\Plant;
 use App\Models\Recipe;
+use App\Services\TelegramNotifier;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
 
@@ -18,12 +24,9 @@ class PublicController extends Controller
             $primaryImg = $plant->images->firstWhere('is_primary') ?? $plant->images->first();
             $imageUrl = $primaryImg?->url ?? '';
 
-            $webpSrcset = null;
-            if (is_string($imageUrl) && Str::startsWith($imageUrl, '/images/catalog/') && Str::endsWith($imageUrl, '.png')) {
-                $base = Str::beforeLast($imageUrl, '.png');
-                $webpSrcset = collect([320, 640, 960, 1376])
-                    ->map(fn (int $width) => "{$base}-{$width}.webp {$width}w")
-                    ->implode(', ');
+            $webpUrl = null;
+            if (is_string($imageUrl) && Str::startsWith($imageUrl, '/images/plants/') && Str::endsWith($imageUrl, '.jpg')) {
+                $webpUrl = Str::beforeLast($imageUrl, '.jpg') . '.webp';
             }
 
             $priceDisplay = '';
@@ -36,7 +39,7 @@ class PublicController extends Controller
                 'title' => $plant->name,
                 'slug' => $plant->slug,
                 'image_url' => $imageUrl,
-                'image_webp_srcset' => $webpSrcset,
+                'image_webp' => $webpUrl,
                 'subtitle' => $plant->subtitle,
                 'description' => Str::limit((string) $plant->description, 110),
                 'benefit' => $plant->growing_period_label ?? $plant->category_label ?? '',
@@ -58,7 +61,7 @@ class PublicController extends Controller
     {
         $plants = Plant::query()
             ->where('is_visible', true)
-            ->with('images')
+            ->with(['images', 'tags'])
             ->orderBy('name')
             ->take(8)
             ->get();
@@ -124,6 +127,202 @@ class PublicController extends Controller
     public function contacts(): View
     {
         return view('contacts');
+    }
+
+    public function placeOrder(Request $request, TelegramNotifier $telegram): JsonResponse
+    {
+        $validated = $request->validate([
+            'customer_name' => ['required', 'string', 'max:255'],
+            'customer_phone' => ['required', 'string', 'max:255'],
+            'items' => ['required', 'array', 'min:1'],
+            'items.*.id' => ['required', 'integer'],
+            'items.*.name' => ['required', 'string', 'max:255'],
+            'items.*.price' => ['required', 'numeric', 'min:0'],
+            'items.*.qty' => ['required', 'integer', 'min:1'],
+            'items.*.weight' => ['nullable', 'string', 'max:255'],
+        ]);
+
+        $total = collect($validated['items'])->reduce(
+            fn (float $sum, array $item): float => $sum + ((float) $item['price'] * (int) $item['qty']),
+            0.0
+        );
+
+        $order = DB::transaction(function () use ($validated, $total): Order {
+            $order = Order::create([
+                'customer_name' => $validated['customer_name'],
+                'customer_phone' => $validated['customer_phone'],
+                'status' => Order::STATUS_NEW,
+                'total' => $total,
+            ]);
+
+            $order->items()->createMany(
+                collect($validated['items'])->map(fn (array $item): array => [
+                    'plant_id' => (int) $item['id'],
+                    'name' => $item['name'],
+                    'price' => (float) $item['price'],
+                    'qty' => (int) $item['qty'],
+                    'weight' => $item['weight'] ?? null,
+                ])->all()
+            );
+
+            return $order->refresh();
+        });
+
+        $telegramSent = $telegram->sendMessage($this->formatOrderTelegramMessage($order->load('items')));
+        if (! $telegramSent) {
+            Log::warning('Telegram order notification failed.', [
+                'order_id' => $order->id,
+                'order_number' => $order->order_number,
+            ]);
+        }
+
+        return response()->json([
+            'success' => true,
+            'order_number' => $order->order_number,
+            'telegram_sent' => $telegramSent,
+        ]);
+    }
+
+    public function submitForm(Request $request, TelegramNotifier $telegram): JsonResponse
+    {
+        $formType = (string) $request->input('form_type');
+
+        $baseRules = [
+            'form_type' => ['required', 'string'],
+            'page_url' => ['nullable', 'string', 'max:2048'],
+        ];
+
+        $typeRules = match ($formType) {
+            'footer', 'footer_shop' => [
+                'name' => ['required', 'string', 'max:255'],
+                'phone' => ['required', 'string', 'max:255'],
+                'message' => ['required', 'string', 'max:1000'],
+            ],
+            'contacts' => [
+                'name' => ['required', 'string', 'max:255'],
+                'phone' => ['required', 'string', 'max:255'],
+                'email' => ['nullable', 'email', 'max:255'],
+                'topic' => ['nullable', 'string', 'max:255'],
+                'message' => ['required', 'string', 'max:1000'],
+            ],
+            'subscription' => [
+                'product' => ['required', 'string', 'max:255'],
+                'sub_name' => ['required', 'string', 'max:255'],
+                'sub_phone' => ['required', 'string', 'max:255'],
+                'email' => ['nullable', 'email', 'max:255'],
+                'sub_address' => ['nullable', 'string', 'max:255'],
+            ],
+            default => [],
+        };
+
+        if ($typeRules === []) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Неизвестный тип формы.',
+            ], 422);
+        }
+
+        $validated = $request->validate($baseRules + $typeRules);
+
+        $telegramSent = $telegram->sendMessage($this->formatLeadTelegramMessage($formType, $validated));
+
+        if (! $telegramSent) {
+            Log::warning('Telegram lead notification failed.', [
+                'form_type' => $formType,
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Не удалось отправить заявку в Telegram.',
+            ], 502);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Заявка отправлена.',
+        ]);
+    }
+
+    private function formatOrderTelegramMessage(Order $order): string
+    {
+        $lines = [
+            'Новый заказ '.$order->order_number,
+            '',
+            'Имя: '.$order->customer_name,
+            'Телефон: '.$order->customer_phone,
+            'Статус: '.$order->status,
+            '',
+            'Состав заказа:',
+        ];
+
+        foreach ($order->items as $item) {
+            $line = '- '.$item->name;
+            if ($item->weight) {
+                $line .= ' ('.$item->weight.')';
+            }
+            $line .= ' x '.$item->qty.' = '.number_format((float) $item->price * $item->qty, 2, ',', ' ').' BYN';
+            $lines[] = $line;
+        }
+
+        $lines[] = '';
+        $lines[] = 'Итого: '.number_format((float) $order->total, 2, ',', ' ').' BYN';
+
+        return implode("\n", $lines);
+    }
+
+    /**
+     * @param  array<string, mixed>  $payload
+     */
+    private function formatLeadTelegramMessage(string $formType, array $payload): string
+    {
+        $label = match ($formType) {
+            'footer' => 'Форма из футера',
+            'footer_shop' => 'Форма из футера магазина',
+            'contacts' => 'Форма со страницы контактов',
+            'subscription' => 'Форма подписки',
+            default => 'Заявка с сайта',
+        };
+
+        $lines = [$label];
+
+        if (! empty($payload['page_url'])) {
+            $lines[] = 'Страница: '.$payload['page_url'];
+        }
+
+        $lines[] = '';
+
+        if ($formType === 'subscription') {
+            $lines[] = 'Продукт: '.($payload['product'] ?? '');
+            $lines[] = 'Имя: '.($payload['sub_name'] ?? '');
+            $lines[] = 'Телефон: '.($payload['sub_phone'] ?? '');
+            if (! empty($payload['email'])) {
+                $lines[] = 'Email: '.$payload['email'];
+            }
+            if (! empty($payload['sub_address'])) {
+                $lines[] = 'Адрес: '.$payload['sub_address'];
+            }
+
+            return implode("\n", $lines);
+        }
+
+        $lines[] = 'Имя: '.($payload['name'] ?? '');
+        $lines[] = 'Телефон: '.($payload['phone'] ?? '');
+
+        if (! empty($payload['email'])) {
+            $lines[] = 'Email: '.$payload['email'];
+        }
+
+        if (! empty($payload['topic'])) {
+            $lines[] = 'Тема: '.$payload['topic'];
+        }
+
+        if (! empty($payload['message'])) {
+            $lines[] = '';
+            $lines[] = 'Сообщение:';
+            $lines[] = (string) $payload['message'];
+        }
+
+        return implode("\n", $lines);
     }
 
     public function show(string $slug): View
