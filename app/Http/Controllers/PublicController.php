@@ -6,8 +6,10 @@ use App\Models\Order;
 use App\Models\Plant;
 use App\Models\Recipe;
 use App\Services\TelegramNotifier;
+use App\Support\ImageVariants;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
@@ -15,38 +17,70 @@ use Illuminate\View\View;
 
 class PublicController extends Controller
 {
+    /** @var list<string> */
+    private const CATALOG_BADGE_LABELS = ['Хит', 'Новинка', 'Выгода', 'Редкость'];
+
+    /**
+     * Ровно по одной плашке на позицию: четыре типа по кругу, порядок после shuffle — случайный на каждый запрос.
+     *
+     * @return list<string>
+     */
+    private function shuffledCatalogBadgeAssignments(int $count): array
+    {
+        if ($count === 0) {
+            return [];
+        }
+
+        $pool = [];
+        for ($i = 0; $i < $count; $i++) {
+            $pool[] = self::CATALOG_BADGE_LABELS[$i % 4];
+        }
+        shuffle($pool);
+
+        return $pool;
+    }
+
     /**
      * @return array<int, array<string, mixed>>
      */
-    private function mapPlantsForCatalog(\Illuminate\Support\Collection $plants): array
+    private function mapPlantsForCatalog(Collection $plants): array
     {
-        return $plants->map(function (Plant $plant) {
+        $plants = $plants->values();
+        $badges = $this->shuffledCatalogBadgeAssignments($plants->count());
+
+        return $plants->map(function (Plant $plant, int $index) use ($badges) {
             $primaryImg = $plant->images->firstWhere('is_primary') ?? $plant->images->first();
             $imageUrl = $primaryImg?->url ?? '';
-
-            $webpUrl = null;
-            if (is_string($imageUrl) && Str::startsWith($imageUrl, '/images/plants/') && Str::endsWith($imageUrl, '.jpg')) {
-                $webpUrl = Str::beforeLast($imageUrl, '.jpg') . '.webp';
-            }
+            $cardImage160 = ImageVariants::squareVariantUrl($imageUrl, 160);
+            $cardImage300 = ImageVariants::squareVariantUrl($imageUrl, 300);
+            $cardImage640 = ImageVariants::squareVariantUrl($imageUrl, 640);
 
             $priceDisplay = '';
             if ($plant->price !== null) {
-                $priceDisplay = number_format((float) $plant->price, 2, ',', ' ') . ' BYN';
+                $priceDisplay = number_format((float) $plant->price, 2, ',', ' ').' BYN';
             }
+
+            $fromDb = trim((string) ($plant->discount_label ?? ''));
+            $badge = $fromDb !== '' ? $fromDb : ($badges[$index] ?? null);
 
             return [
                 'id' => $plant->id,
                 'title' => $plant->name,
                 'slug' => $plant->slug,
                 'image_url' => $imageUrl,
-                'image_webp' => $webpUrl,
+                'image_card_src' => $cardImage300 ?? $cardImage640 ?? $imageUrl,
+                'image_card_srcset' => $this->buildSrcset([
+                    [$cardImage160, '160w'],
+                    [$cardImage300, '300w'],
+                    [$cardImage640, '640w'],
+                ]),
                 'subtitle' => $plant->subtitle,
                 'description' => Str::limit((string) $plant->description, 110),
                 'benefit' => $plant->growing_period_label ?? $plant->category_label ?? '',
                 'price' => $priceDisplay,
                 'price_raw' => (float) ($plant->price ?? 0),
                 'category' => $plant->category_label ?? '',
-                'badge' => $plant->discount_label ?? ($plant->is_bestseller ? 'Хит' : null),
+                'badge' => $badge,
                 'rating' => $plant->rating ? (float) $plant->rating : null,
                 'reviews_count' => $plant->reviews_count ?? 0,
                 'tags' => $plant->relationLoaded('tags')
@@ -55,6 +89,19 @@ class PublicController extends Controller
                 'weight' => $plant->price_unit_label ?? '',
             ];
         })->values()->all();
+    }
+
+    /**
+     * @param  list<array{0:?string, 1:string}>  $sources
+     */
+    private function buildSrcset(array $sources): ?string
+    {
+        $srcset = collect($sources)
+            ->filter(fn (array $source): bool => filled($source[0]))
+            ->map(fn (array $source): string => $source[0].' '.$source[1])
+            ->implode(', ');
+
+        return $srcset !== '' ? $srcset : null;
     }
 
     public function home(): View
@@ -207,6 +254,7 @@ class PublicController extends Controller
             ],
             'subscription' => [
                 'product' => ['required', 'string', 'max:255'],
+                'subscription_frequency' => ['required', 'string', 'in:weekly,biweekly,monthly'],
                 'sub_name' => ['required', 'string', 'max:255'],
                 'sub_phone' => ['required', 'string', 'max:255'],
                 'email' => ['nullable', 'email', 'max:255'],
@@ -292,7 +340,15 @@ class PublicController extends Controller
         $lines[] = '';
 
         if ($formType === 'subscription') {
+            $freqKey = (string) ($payload['subscription_frequency'] ?? '');
+            $freqLabel = match ($freqKey) {
+                'weekly' => 'Каждую неделю',
+                'biweekly' => 'Раз в 2 недели',
+                'monthly' => 'Раз в месяц',
+                default => $freqKey,
+            };
             $lines[] = 'Продукт: '.($payload['product'] ?? '');
+            $lines[] = 'Периодичность: '.$freqLabel;
             $lines[] = 'Имя: '.($payload['sub_name'] ?? '');
             $lines[] = 'Телефон: '.($payload['sub_phone'] ?? '');
             if (! empty($payload['email'])) {

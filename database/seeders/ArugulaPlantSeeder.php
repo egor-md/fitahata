@@ -121,9 +121,7 @@ class ArugulaPlantSeeder extends Seeder
     {
         $plant->images()->delete();
         $rows = [
-            ['url' => '/images/test-card/phero1.jpg', 'sort_order' => 0, 'is_primary' => false],
-            ['url' => '/images/test-card/phero2.jpg', 'sort_order' => 1, 'is_primary' => false],
-            ['url' => '/images/test-card/phero3.jpg', 'sort_order' => 2, 'is_primary' => true],
+            ['url' => '/images/catalog/rukola.webp', 'sort_order' => 0, 'is_primary' => true],
         ];
         foreach ($rows as $r) {
             PlantImage::query()->create([

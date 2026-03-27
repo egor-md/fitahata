@@ -1,24 +1,34 @@
 @extends('layouts.shop')
 
-@section('title', 'Контакты')
+{{-- Дублируем контакты и форму на странице — общий футер магазина не показываем --}}
+@section('hide_shop_footer')
+@endsection
+
+@section('title', 'FitaHata, Контакты')
 @section('meta_description', 'Контакты FITAHATA в Гомеле: адрес, телефон, email, карта и форма обратной связи.')
 
 @section('content')
     {{-- Hero --}}
-    <section class="bg-gradient-to-br from-[#1A3A0F] via-[#243D18] to-[#1A3A0F] pt-24 sm:pt-32 pb-24 sm:pb-36 text-white" aria-labelledby="contacts-heading">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 text-center">
-            <div class="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-4 py-1.5 mb-6">
-                <span class="text-white/80 text-sm" aria-hidden="true"><i class="ri-leaf-fill"></i></span>
+    {{-- max-sm:min-h — только на узком экране; с sm: без min-h, иначе min-h «съедает» прирост от pb и фон всё равно тянется на весь блок --}}
+    <section class="relative max-sm:min-h-[320px] overflow-hidden pt-20 pb-16 text-white sm:pt-24 sm:pb-24" aria-labelledby="contacts-heading">
+        <div class="absolute inset-0 z-0">
+            <img src="{{ asset('images/contacts-hero-bg.jpg') }}" alt="FITAHATA контакты"
+                class="h-full w-full object-cover object-top" width="1920" height="500" loading="eager" fetchpriority="high" decoding="async">
+            <div class="absolute inset-0 bg-gradient-to-b from-[#1A3A0F]/75 via-[#1A3A0F]/60 to-[#1A3A0F]/80" aria-hidden="true"></div>
+        </div>
+        <div class="relative z-10 mx-auto max-w-7xl px-6 py-16 transition-all duration-700 sm:px-10 sm:pt-20 sm:pb-0 lg:px-12">
+            <div class="mb-5 inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/15 px-4 py-1.5 backdrop-blur-sm">
+                <span class="flex h-4 w-4 items-center justify-center" aria-hidden="true"><i class="ri-leaf-fill text-xs text-[#B8D4A8]"></i></span>
                 <span class="text-sm font-medium text-white/90">FITAHATA · Гомель</span>
             </div>
-            <h1 id="contacts-heading" class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight mb-4">Свяжитесь с нами</h1>
-            <p class="text-lg sm:text-xl text-white/70 max-w-xl mx-auto leading-relaxed mb-8">
+            <h1 id="contacts-heading" class="mb-4 text-4xl font-bold leading-tight text-white md:text-5xl">Свяжитесь с нами</h1>
+            <p class="max-w-lg text-lg leading-relaxed text-white/75">
                 Мы всегда рады ответить на ваши вопросы и помочь с выбором микрозелени.
             </p>
-            <nav class="flex items-center justify-center gap-2 text-sm text-white/50" aria-label="Навигация по разделам">
-                <a class="hover:text-white transition-colors" href="{{ route('home') }}">Главная</a>
-                <span aria-hidden="true"><i class="ri-arrow-right-s-line"></i></span>
-                <span class="text-white font-medium">Контакты</span>
+            <nav class="mt-8 flex items-center gap-2 text-sm text-white/50" aria-label="Навигация по разделам">
+                <a class="transition-colors hover:text-white/80" href="{{ route('home') }}">Главная</a>
+                <span class="flex h-3 w-3 items-center justify-center" aria-hidden="true"><i class="ri-arrow-right-s-line"></i></span>
+                <span class="text-white/80">Контакты</span>
             </nav>
         </div>
     </section>
@@ -32,11 +42,11 @@
                         <i class="ri-map-pin-2-fill text-lg text-[#2D5016]"></i>
                     </div>
                     <div class="flex-1">
-                        <p class="text-xs font-semibold text-[#6B7B5A] uppercase tracking-wider mb-1">Адрес</p>
-                        <p class="text-sm font-semibold text-[#1A1A1A]">г. Гомель</p>
-                        <p class="text-sm font-semibold text-[#1A1A1A]">ул. Советская, 112</p>
+                        <p class="text-xs font-semibold text-[#4b5046] uppercase tracking-wider mb-1">Адрес</p>
+                        <p class="text-sm font-semibold text-[#1A1A1A]">{{ config('shop.city') }}</p>
+                        <p class="text-sm font-semibold text-[#1A1A1A]">{{ config('shop.street') }}</p>
                     </div>
-                    <a class="inline-flex items-center gap-1.5 text-sm font-bold text-[#2D5016] hover:text-[#4A7C2A] transition-colors mt-auto" href="https://www.google.com/maps?q=Гомель+ул+Советская+112"
+                    <a class="inline-flex items-center gap-1.5 text-sm font-bold text-[#2D5016] hover:text-[#4A7C2A] transition-colors mt-auto" href="https://www.google.com/maps/search/?api=1&amp;query={{ urlencode(config('shop.address_full')) }}"
                         target="_blank" rel="noopener noreferrer">
                         Открыть карту
                         <span aria-hidden="true"><i class="ri-arrow-right-up-line text-xs"></i></span>
@@ -48,11 +58,12 @@
                         <i class="ri-phone-fill text-lg text-[#2D5016]"></i>
                     </div>
                     <div class="flex-1">
-                        <p class="text-xs font-semibold text-[#6B7B5A] uppercase tracking-wider mb-1">Телефон</p>
-                        <p class="text-sm font-semibold text-[#1A1A1A]">+375 (29) 123-45-67</p>
-                        <p class="text-sm font-semibold text-[#1A1A1A]">+375 (33) 987-65-43</p>
+                        <p class="text-xs font-semibold text-[#4b5046] uppercase tracking-wider mb-1">Телефон</p>
+                        @foreach (config('shop.phones') as $phone)
+                        <p class="text-sm font-semibold text-[#1A1A1A]">{{ $phone['display'] }}</p>
+                        @endforeach
                     </div>
-                    <a class="inline-flex items-center gap-1.5 text-sm font-bold text-[#2D5016] hover:text-[#4A7C2A] transition-colors mt-auto" href="tel:+375291234567" rel="noopener noreferrer">
+                    <a class="inline-flex items-center gap-1.5 text-sm font-bold text-[#2D5016] hover:text-[#4A7C2A] transition-colors mt-auto" href="tel:{{ config('shop.phones.0.tel') }}" rel="noopener noreferrer">
                         Позвонить
                         <span aria-hidden="true"><i class="ri-arrow-right-up-line text-xs"></i></span>
                     </a>
@@ -63,11 +74,10 @@
                         <i class="ri-mail-fill text-lg text-[#2D5016]"></i>
                     </div>
                     <div class="flex-1">
-                        <p class="text-xs font-semibold text-[#6B7B5A] uppercase tracking-wider mb-1">Email</p>
-                        <p class="text-sm font-semibold text-[#1A1A1A]">hello@fitahata.by</p>
-                        <p class="text-sm font-semibold text-[#1A1A1A]">order@fitahata.by</p>
+                        <p class="text-xs font-semibold text-[#4b5046] uppercase tracking-wider mb-1">Email</p>
+                        <p class="text-sm font-semibold text-[#1A1A1A]">{{ config('shop.email') }}</p>
                     </div>
-                    <a class="inline-flex items-center gap-1.5 text-sm font-bold text-[#2D5016] hover:text-[#4A7C2A] transition-colors mt-auto" href="mailto:hello@fitahata.by" rel="noopener noreferrer">
+                    <a class="inline-flex items-center gap-1.5 text-sm font-bold text-[#2D5016] hover:text-[#4A7C2A] transition-colors mt-auto" href="mailto:{{ config('shop.email') }}" rel="noopener noreferrer">
                         Написать письмо
                         <span aria-hidden="true"><i class="ri-arrow-right-up-line text-xs"></i></span>
                     </a>
@@ -78,7 +88,7 @@
                         <i class="ri-time-fill text-lg text-[#2D5016]"></i>
                     </div>
                     <div class="flex-1">
-                        <p class="text-xs font-semibold text-[#6B7B5A] uppercase tracking-wider mb-1">Режим работы</p>
+                        <p class="text-xs font-semibold text-[#4b5046] uppercase tracking-wider mb-1">Режим работы</p>
                         <p class="text-sm font-semibold text-[#1A1A1A]">Понедельник — пятница</p>
                         <p class="text-sm font-semibold text-[#1A1A1A]">8:00 — 20:00</p>
                     </div>
@@ -97,7 +107,7 @@
                 </p>
                 <div class="w-full aspect-video rounded-2xl overflow-hidden border border-[#DDD6C8]">
                     <iframe title="FITAHATA на карте Гомеля"
-                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d75222.06!2d30.9!3d52.43!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x46d6d1e28adb4b0b%3A0xb01b5f03b7f5dc62!2z0JPQvtC80LXQu9GM!5e0!3m2!1sru!2sby!4v1700000000000!5m2!1sru!2sby"
+                        src="https://maps.google.com/maps?q={{ urlencode(config('shop.address_full')) }}&amp;hl=ru&amp;z=16&amp;output=embed"
                         width="100%" height="100%" allowfullscreen loading="lazy"
                         referrerpolicy="no-referrer-when-downgrade"></iframe>
                 </div>
@@ -106,15 +116,15 @@
                     <li class="flex items-start gap-3">
                         <span class="w-9 h-9 flex items-center justify-center rounded-lg bg-[#4A7C2A]/10 text-[#4A7C2A] flex-shrink-0 mt-0.5" aria-hidden="true"><i class="ri-map-pin-line"></i></span>
                         <div>
-                            <p class="text-sm font-semibold text-[#1A3A0F]">г. Гомель, ул. Советская, 112</p>
-                            <p class="text-xs text-[#6B7B5A] mt-0.5">Работаем ежедневно 8:00 — 20:00</p>
+                            <p class="text-sm font-semibold text-[#1A3A0F]">{{ config('shop.address_full') }}</p>
+                            <p class="text-sm text-[#4b5046] mt-0.5">Работаем ежедневно 8:00 — 20:00</p>
                         </div>
                     </li>
                     <li class="flex items-start gap-3">
                         <span class="w-9 h-9 flex items-center justify-center rounded-lg bg-[#4A7C2A]/10 text-[#4A7C2A] flex-shrink-0 mt-0.5" aria-hidden="true"><i class="ri-car-line"></i></span>
                         <div>
                             <p class="text-sm font-semibold text-[#1A3A0F]">Бесплатная парковка</p>
-                            <p class="text-xs text-[#6B7B5A] mt-0.5">Парковка у входа, 20 мест</p>
+                            <p class="text-sm text-[#4b5046] mt-0.5">Парковка у входа, 20 мест</p>
                         </div>
                     </li>
                 </ul>
@@ -123,9 +133,8 @@
                     <p class="text-xs font-semibold text-[#6B7B5A] uppercase tracking-wider mb-3">Мы в социальных сетях</p>
                     <div class="flex items-center gap-2">
                         <a href="#" class="w-10 h-10 flex items-center justify-center rounded-xl bg-white border border-[#DDD6C8] text-[#4A7C2A] hover:bg-[#2D5016] hover:text-white hover:border-[#2D5016] transition-all duration-200" aria-label="Instagram"><i class="ri-instagram-line" aria-hidden="true"></i></a>
-                        <a href="#" class="w-10 h-10 flex items-center justify-center rounded-xl bg-white border border-[#DDD6C8] text-[#4A7C2A] hover:bg-[#2D5016] hover:text-white hover:border-[#2D5016] transition-all duration-200" aria-label="Telegram"><i class="ri-telegram-line" aria-hidden="true"></i></a>
                         <a href="#" class="w-10 h-10 flex items-center justify-center rounded-xl bg-white border border-[#DDD6C8] text-[#4A7C2A] hover:bg-[#2D5016] hover:text-white hover:border-[#2D5016] transition-all duration-200" aria-label="ВКонтакте"><i class="ri-vk-line" aria-hidden="true"></i></a>
-                        <a href="https://t.me/m93458" target="_blank" rel="nofollow noopener noreferrer" class="w-10 h-10 flex items-center justify-center rounded-xl bg-white border border-[#DDD6C8] text-[#229ED9] hover:bg-[#229ED9] hover:text-white hover:border-[#229ED9] transition-all duration-200" aria-label="Telegram"><i class="ri-telegram-line" aria-hidden="true"></i></a>
+                        <a href="https://t.me/m93458" target="_blank" rel="nofollow noopener noreferrer" class="w-10 h-10 flex items-center justify-center rounded-xl bg-white border border-[#DDD6C8] text-[#0C6BAE] hover:bg-[#0C6BAE] hover:text-white hover:border-[#0C6BAE] transition-all duration-200" aria-label="Написать в Telegram"><i class="ri-telegram-line" aria-hidden="true"></i></a>
                     </div>
                 </div>
             </div>
@@ -184,7 +193,7 @@
                         <div class="flex flex-wrap items-center justify-between gap-4 pt-1">
                             <p class="text-xs text-[#9A9E8F] leading-snug">
                                 Нажимая кнопку, вы соглашаетесь с
-                                <a href="#" class="text-[#4A7C2A] font-bold hover:underline">политикой конфиденциальности</a>
+                                <a href="#" class="text-[#2D5016] font-bold hover:underline">политикой конфиденциальности</a>
                             </p>
                             <button type="submit" class="inline-flex items-center gap-2 bg-[#2D5016] text-white rounded-xl px-6 py-3 text-sm font-bold hover:bg-[#1A3A0F] transition-colors whitespace-nowrap cursor-pointer">
                                 <span aria-hidden="true"><i class="ri-send-plane-fill"></i></span>
@@ -260,13 +269,19 @@
                     <span aria-hidden="true"><i class="ri-shopping-basket-line"></i></span>
                     Смотреть каталог
                 </a>
-                <a class="inline-flex items-center gap-2 border border-white/30 text-white rounded-full px-6 py-3 text-sm font-bold hover:bg-white/10 transition-colors whitespace-nowrap" href="tel:+375291234567">
+                <a class="inline-flex items-center gap-2 border border-white/30 text-white rounded-full px-6 py-3 text-sm font-bold hover:bg-white/10 transition-colors whitespace-nowrap" href="tel:{{ config('shop.phones.0.tel') }}">
                     <span aria-hidden="true"><i class="ri-phone-line"></i></span>
                     Позвонить нам
                 </a>
             </div>
         </div>
     </section>
+
+    <div class="bg-[#E8E2D5] border-t border-[#DDD6C8]" aria-label="Разработка сайта">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 py-4">
+            @include('partials.site-credits')
+        </div>
+    </div>
 @endsection
 
 @push('scripts')

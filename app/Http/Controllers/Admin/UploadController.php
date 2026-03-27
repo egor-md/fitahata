@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Support\ImageVariants;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
@@ -27,6 +28,7 @@ class UploadController extends Controller
         if (! $file->isValid()) {
             $code = $file->getError();
             $msg = $file->getErrorMessage() ?: 'File upload failed (PHP error code: '.$code.').';
+
             return response()->json([
                 'message' => $msg,
                 'errors' => ['image' => [$msg]],
@@ -35,10 +37,13 @@ class UploadController extends Controller
 
         $request->validate([
             'image' => ['file', 'mimes:jpeg,jpg,png,gif,webp', 'max:5120'],
-            'collection' => ['required', 'string', 'in:plants,recipes'],
+            'collection' => ['required', 'string', 'in:catalog,recipes,plants'],
         ]);
 
         $collection = (string) $request->input('collection');
+        if ($collection === 'plants') {
+            $collection = 'catalog';
+        }
         $image = $this->createImageResource($file->getRealPath(), (string) $file->getMimeType());
 
         if (! $image) {
@@ -70,12 +75,16 @@ class UploadController extends Controller
 
         imagedestroy($optimized);
 
+        if ($collection === 'catalog') {
+            ImageVariants::generateSquareVariants($absolutePath, ImageVariants::CATALOG_SQUARE_SIZES);
+        }
+
         return response()->json([
             'url' => asset('images/'.$collection.'/'.$filename),
         ]);
     }
 
-    private function createImageResource(string $path, string $mimeType): \GdImage|null
+    private function createImageResource(string $path, string $mimeType): ?\GdImage
     {
         return match ($mimeType) {
             'image/jpeg', 'image/jpg' => @imagecreatefromjpeg($path) ?: null,

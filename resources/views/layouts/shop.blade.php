@@ -2,7 +2,8 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <link rel="icon" type="image/svg+xml" href="/vite.svg">
+    <link rel="icon" href="/favicon.ico" sizes="any">
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'FITAHATA — Свежая микрозелень в Гомеле')</title>
     <meta name="description" content="@yield('meta_description', 'Свежая микрозелень FITAHATA в Гомеле: каталог культур, доставка в день сбора и полезные рецепты.')">
@@ -11,14 +12,10 @@
     <meta property="og:description" content="@yield('meta_description', 'Свежая микрозелень FITAHATA в Гомеле.')">
     <meta property="og:type" content="website">
     <meta name="twitter:card" content="summary_large_image">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.5.0/remixicon.min.css">
-    @vite(['resources/css/app.css', 'resources/css/custom_css.css'])
+    @vite(['resources/css/shop-app.css'])
     <style>
         html { scrollbar-gutter: stable; }
-        body { font-family: 'Manrope', sans-serif; }
+        body { font-family: 'Manrope Variable', 'Manrope', ui-sans-serif, system-ui, sans-serif; }
         .slide-panel { transform: translateX(100%); transition: transform .3s cubic-bezier(.4,0,.2,1); }
         .slide-panel.open { transform: translateX(0); }
         .slide-panel-left { transform: translateX(-100%); transition: transform .3s cubic-bezier(.4,0,.2,1); }
@@ -30,7 +27,7 @@
     </style>
     @stack('styles')
 </head>
-<body class="bg-[#FAFAF7] min-h-screen antialiased" style="font-family:'Manrope',sans-serif">
+<body class="bg-[#FAFAF7] min-h-screen antialiased" style="font-family:'Manrope Variable','Manrope',ui-sans-serif,system-ui,sans-serif">
 
 {{-- ═══════════ NAV ═══════════ --}}
 <nav class="sticky top-0 z-50 bg-white border-b border-[#F0EDE4]">
@@ -39,7 +36,7 @@
                     <div class="w-8 h-8 flex items-center justify-center bg-[#2D5016] rounded-lg"><i class="ri-leaf-fill text-white text-base"></i></div>
                     <span class="text-xl font-extrabold text-[#1A3A0F] tracking-wide">FITAHATA</span>
                 </a>
-        <ul class="hidden md:flex items-center gap-7">
+        <ul class="hidden md:flex items-baseline gap-7">
             <li><a href="{{ route('home') }}" class="text-sm font-medium transition-colors {{ request()->routeIs('home') ? 'text-[#2D5016] font-semibold' : 'text-[#1A1A1A] hover:text-[#2D5016]' }}">Главная</a></li>
             <li class="relative group">
                 <button type="button" class="text-sm font-medium transition-colors flex items-center gap-1 cursor-pointer {{ request()->is('article/*') || request()->routeIs('catalog') ? 'text-[#2D5016] font-semibold' : 'text-[#1A1A1A] hover:text-[#2D5016]' }}">
@@ -73,87 +70,9 @@
 </main>
 
 {{-- ═══════════ FOOTER ═══════════ --}}
-<footer class="bg-[#F0EBE0] border-t border-[#DDD6C8]">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 py-16">
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8">
-            <div class="lg:col-span-3">
-                <a href="{{ route('home') }}" class="inline-flex items-center gap-2 mb-6">
-                    <div class="w-8 h-8 flex items-center justify-center bg-[#2D5016] rounded-lg"><i class="ri-leaf-fill text-white text-base"></i></div>
-                    <span class="text-xl font-extrabold text-[#1A3A0F] tracking-wide">FITAHATA</span>
-                </a>
-                <p class="text-sm text-[#6B7B5A] leading-relaxed mb-6">Свежая фермерская микрозелень с доставкой по Гомелю. Выращиваем с заботой — доставляем за 24 часа.</p>
-                <div class="flex items-center gap-2 mb-8">
-                    <a href="#" aria-label="Instagram" class="w-9 h-9 flex items-center justify-center rounded-xl bg-white border border-[#DDD6C8] text-[#4A7C2A] hover:bg-[#2D5016] hover:text-white hover:border-[#2D5016] transition-all"><i class="ri-instagram-line"></i></a>
-                    <a href="#" aria-label="Telegram" class="w-9 h-9 flex items-center justify-center rounded-xl bg-white border border-[#DDD6C8] text-[#4A7C2A] hover:bg-[#2D5016] hover:text-white hover:border-[#2D5016] transition-all"><i class="ri-telegram-line"></i></a>
-                    <a href="https://t.me/m93458" target="_blank" rel="nofollow noopener noreferrer" aria-label="Telegram" class="w-9 h-9 flex items-center justify-center rounded-xl bg-white border border-[#DDD6C8] text-[#229ED9] hover:bg-[#229ED9] hover:text-white hover:border-[#229ED9] transition-all"><i class="ri-telegram-line"></i></a>
-                </div>
-                <ul class="flex flex-col gap-2">
-                    <li><a href="{{ route('catalog') }}" class="inline-flex items-center gap-2 text-sm text-[#6B7B5A] hover:text-[#2D5016] transition-colors"><i class="ri-arrow-right-s-line text-[#4A7C2A]"></i>Каталог</a></li>
-                    <li><a href="{{ route('contacts') }}" class="inline-flex items-center gap-2 text-sm text-[#6B7B5A] hover:text-[#2D5016] transition-colors"><i class="ri-arrow-right-s-line text-[#4A7C2A]"></i>Контакты</a></li>
-                </ul>
-            </div>
-            <div class="lg:col-span-3">
-                <h3 class="flex items-center gap-2 text-base font-bold text-[#1A3A0F] mb-6"><i class="ri-contacts-line text-[#4A7C2A]"></i>Контакты</h3>
-                <ul class="flex flex-col gap-5">
-                    <li class="flex items-start gap-3">
-                        <span class="w-8 h-8 flex items-center justify-center rounded-lg bg-[#4A7C2A]/10 text-[#4A7C2A] flex-shrink-0"><i class="ri-map-pin-2-line"></i></span>
-                        <div><p class="text-xs text-[#9A9E8F] mb-0.5">Адрес</p><a href="https://maps.google.com/?q=Гомель" class="text-sm font-semibold text-[#1A3A0F] hover:text-[#4A7C2A] transition-colors">г. Гомель, ул. Советская, 112</a></div>
-                    </li>
-                    <li class="flex items-start gap-3">
-                        <span class="w-8 h-8 flex items-center justify-center rounded-lg bg-[#4A7C2A]/10 text-[#4A7C2A] flex-shrink-0"><i class="ri-phone-line"></i></span>
-                        <div><p class="text-xs text-[#9A9E8F] mb-0.5">Телефон</p><a href="tel:+375291234567" class="text-sm font-semibold text-[#1A3A0F] hover:text-[#4A7C2A] transition-colors">+375 (29) 123-45-67</a></div>
-                    </li>
-                    <li class="flex items-start gap-3">
-                        <span class="w-8 h-8 flex items-center justify-center rounded-lg bg-[#4A7C2A]/10 text-[#4A7C2A] flex-shrink-0"><i class="ri-mail-line"></i></span>
-                        <div><p class="text-xs text-[#9A9E8F] mb-0.5">Email</p><a href="mailto:hello@fitahata.by" class="text-sm font-semibold text-[#1A3A0F] hover:text-[#4A7C2A] transition-colors">hello@fitahata.by</a></div>
-                    </li>
-                    <li class="flex items-start gap-3">
-                        <span class="w-8 h-8 flex items-center justify-center rounded-lg bg-[#4A7C2A]/10 text-[#4A7C2A] flex-shrink-0"><i class="ri-time-line"></i></span>
-                        <div><p class="text-xs text-[#9A9E8F] mb-0.5">Режим работы</p><span class="text-sm font-semibold text-[#1A3A0F]">Пн–Вс: 8:00 — 20:00</span></div>
-                    </li>
-                </ul>
-            </div>
-            <div class="lg:col-span-6">
-                <h3 class="flex items-center gap-2 text-base font-bold text-[#1A3A0F] mb-2"><i class="ri-mail-send-line text-[#4A7C2A]"></i>Написать нам</h3>
-                <p class="text-sm text-[#6B7B5A] leading-relaxed mb-6">Есть вопросы о продукте или хотите оформить крупный заказ? Мы ответим быстро.</p>
-                <form id="shopFooterForm" data-readdy-form="true" data-fitahata-form="true" data-form-type="footer_shop" class="space-y-4">
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div>
-                            <label for="footer-name" class="block text-xs font-semibold text-[#6B7B5A] uppercase tracking-wider mb-1.5">Имя *</label>
-                            <input id="footer-name" required placeholder="Ваше имя" class="w-full bg-white border border-[#DDD6C8] rounded-xl px-4 py-3 text-sm text-[#1A3A0F] placeholder-[#B5BAA8] outline-none focus:border-[#4A7C2A] focus:ring-2 focus:ring-[#4A7C2A]/20 transition" type="text" name="name">
-                        </div>
-                        <div>
-                            <label for="footer-phone" class="block text-xs font-semibold text-[#6B7B5A] uppercase tracking-wider mb-1.5">Телефон *</label>
-                            <input id="footer-phone" required placeholder="+375 (29) ___-__-__" class="w-full bg-white border border-[#DDD6C8] rounded-xl px-4 py-3 text-sm text-[#1A3A0F] placeholder-[#B5BAA8] outline-none focus:border-[#4A7C2A] focus:ring-2 focus:ring-[#4A7C2A]/20 transition" type="tel" name="phone">
-                        </div>
-                    </div>
-                    <div>
-                        <div class="flex items-center justify-between mb-1.5">
-                            <label for="footer-message" class="block text-xs font-semibold text-[#6B7B5A] uppercase tracking-wider">Сообщение *</label>
-                            <span class="text-xs text-[#B5BAA8]" id="footerCharCount">0/500</span>
-                        </div>
-                        <textarea id="footer-message" name="message" required rows="3" maxlength="500" placeholder="Напишите ваш вопрос или пожелание..." class="w-full bg-white border border-[#DDD6C8] rounded-xl px-4 py-3 text-sm text-[#1A3A0F] placeholder-[#B5BAA8] outline-none focus:border-[#4A7C2A] focus:ring-2 focus:ring-[#4A7C2A]/20 transition resize-none"></textarea>
-                    </div>
-                    <div class="flex flex-wrap items-center justify-between gap-4 pt-1">
-                        <p class="text-xs text-[#B5BAA8] leading-snug">Нажимая кнопку, вы соглашаетесь с <a href="#" class="text-[#4A7C2A] font-bold hover:underline">политикой конфиденциальности</a></p>
-                        <button type="submit" class="inline-flex items-center gap-2 bg-[#2D5016] text-white rounded-xl px-6 py-3 text-sm font-bold hover:bg-[#1A3A0F] transition-colors whitespace-nowrap cursor-pointer"><i class="ri-send-plane-line"></i>Отправить</button>
-                    </div>
-                    <p data-form-status class="text-sm"></p>
-                </form>
-            </div>
-        </div>
-    </div>
-    <div class="bg-[#E8E2D5] border-t border-[#DDD6C8]">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 py-5 flex flex-col sm:flex-row items-center justify-between gap-3">
-            <p class="text-xs text-[#9A9E8F]">&copy; FITAHATA 2026. Все права защищены.</p>
-            <div class="flex items-center gap-5">
-                <a href="#" class="text-xs text-[#9A9E8F] hover:text-[#4A7C2A] transition-colors">Политика конфиденциальности</a>
-                <span class="w-1 h-1 rounded-full bg-[#C5D9B0]"></span>
-                <a href="#" class="text-xs text-[#9A9E8F] hover:text-[#4A7C2A] transition-colors">Пользовательское соглашение</a>
-            </div>
-        </div>
-    </div>
-</footer>
+@unless (View::hasSection('hide_shop_footer'))
+    @include('partials.shop-footer')
+@endunless
 
 {{-- ═══════════ MOBILE FLOATING CART BTN ═══════════ --}}
 <button id="cartToggleMobile" class="fixed bottom-6 right-6 md:hidden flex items-center gap-2 bg-[#2D5016] text-white px-5 py-3.5 rounded-full font-bold text-sm whitespace-nowrap cursor-pointer z-40" style="box-shadow:rgba(45,80,22,.4) 0 8px 24px">
@@ -168,7 +87,7 @@
 <div id="mobileMenuPanel" class="slide-panel-left fixed top-0 left-0 h-full w-full max-w-xs bg-white z-50 flex flex-col" style="box-shadow:8px 0 30px rgba(0,0,0,.08)">
     <div class="flex items-center justify-between px-6 py-5 border-b border-[#F0EDE4]">
         <span class="text-lg font-extrabold tracking-tight text-[#2D5016]">FITAHATA</span>
-        <button id="mobileMenuClose" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-[#F5F1E8] transition-colors cursor-pointer text-[#5A5A5A]"><i class="ri-close-line text-lg"></i></button>
+        <button type="button" id="mobileMenuClose" aria-label="Закрыть меню" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-[#F5F1E8] transition-colors cursor-pointer text-[#5A5A5A]"><i class="ri-close-line text-lg" aria-hidden="true"></i></button>
     </div>
     <nav class="flex-1 overflow-y-auto px-6 py-6">
         <ul class="flex flex-col gap-1">
@@ -178,16 +97,18 @@
         </ul>
         @if(($menuPlants ?? collect())->isNotEmpty())
         <div class="mt-4 pt-4 border-t border-[#F0EDE4]">
-            <p class="text-xs text-[#9A9A9A] mb-2 px-4 font-medium uppercase tracking-wide">Культуры</p>
+            <p class="text-xs text-[#5A5A5A] mb-2 px-4 font-medium uppercase tracking-wide">Культуры</p>
             @foreach(($menuPlants ?? collect()) as $mp)
             <a href="{{ route('article.show', $mp->slug) }}" class="block px-4 py-2 rounded-lg text-sm text-[#5A5A5A] hover:bg-[#F5F1E8] hover:text-[#2D5016] transition-colors">{{ $mp->name }}</a>
             @endforeach
         </div>
         @endif
         <div class="mt-6 pt-6 border-t border-[#F0EDE4]">
-            <p class="text-xs text-[#9A9A9A] mb-3 px-4">Доставка по Гомелю</p>
-            <a href="https://t.me/m93458" target="_blank" rel="nofollow noopener noreferrer" class="flex items-center gap-3 px-4 py-3 rounded-xl text-[#1A1A1A] hover:bg-[#F5F1E8] transition-colors text-sm font-medium"><i class="ri-telegram-line text-lg text-[#229ED9]"></i>Telegram</a>
-            <a href="tel:+375291234567" class="flex items-center gap-3 px-4 py-3 rounded-xl text-[#1A1A1A] hover:bg-[#F5F1E8] transition-colors text-sm font-medium"><i class="ri-phone-fill text-lg text-[#2D5016]"></i>+375 29 123-45-67</a>
+            <p class="text-xs text-[#5A5A5A] mb-3 px-4">Доставка по Гомелю</p>
+            <a href="https://t.me/m93458" target="_blank" rel="nofollow noopener noreferrer" aria-label="Написать в Telegram" class="flex items-center gap-3 px-4 py-3 rounded-xl text-[#1A1A1A] hover:bg-[#F5F1E8] transition-colors text-sm font-medium"><i class="ri-telegram-line text-lg text-[#0C6BAE]" aria-hidden="true"></i>Telegram</a>
+            @foreach (config('shop.phones') as $phone)
+            <a href="tel:{{ $phone['tel'] }}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-[#1A1A1A] hover:bg-[#F5F1E8] transition-colors text-sm font-medium"><i class="ri-phone-fill text-lg text-[#2D5016]"></i>{{ $phone['display'] }}</a>
+            @endforeach
         </div>
     </nav>
 </div>
@@ -199,20 +120,20 @@
             <div class="w-8 h-8 bg-[#F5F1E8] rounded-full flex items-center justify-center"><i class="ri-shopping-cart-2-line text-[#2D5016] text-base"></i></div>
             <div>
                 <h2 class="text-base font-bold text-[#1A1A1A]">Моя корзина</h2>
-                <p id="cartSubtitle" class="text-xs text-[#9A9A9A]">Пусто</p>
+                <p id="cartSubtitle" class="text-xs text-[#5A5A5A]">Пусто</p>
             </div>
         </div>
-        <button id="cartClose" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-[#F5F1E8] transition-colors cursor-pointer text-[#5A5A5A]"><i class="ri-close-line text-lg"></i></button>
+        <button type="button" id="cartClose" aria-label="Закрыть корзину" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-[#F5F1E8] transition-colors cursor-pointer text-[#5A5A5A]"><i class="ri-close-line text-lg" aria-hidden="true"></i></button>
     </div>
     <div id="cartItems" class="flex-1 overflow-y-auto px-6 py-4 flex flex-col gap-3">
         <div id="cartEmpty" class="flex flex-col items-center justify-center py-16 text-center">
-            <div class="w-16 h-16 bg-[#F5F1E8] rounded-full flex items-center justify-center mb-4"><i class="ri-shopping-cart-line text-2xl text-[#B0B0B0]"></i></div>
-            <p class="text-sm text-[#9A9A9A]">Корзина пуста</p>
-            <p class="text-xs text-[#C0C0C0] mt-1">Добавьте товары из каталога</p>
+            <div class="w-16 h-16 bg-[#F5F1E8] rounded-full flex items-center justify-center mb-4"><i class="ri-shopping-cart-line text-2xl text-[#6E6E6E]" aria-hidden="true"></i></div>
+            <p class="text-sm text-[#5A5A5A]">Корзина пуста</p>
+            <p class="text-xs text-[#5C5C5C] mt-1">Добавьте товары из каталога</p>
         </div>
     </div>
     <div id="cartFooter" class="border-t border-[#F0EDE4] px-6 py-5 flex flex-col gap-3 hidden">
-        <div class="flex items-center justify-between"><span class="text-sm text-[#7A7A7A]">Доставка</span><span class="text-sm font-medium text-[#2D5016]">Бесплатно</span></div>
+        <div class="flex items-center justify-between"><span class="text-sm text-[#666666]">Доставка</span><span class="text-sm font-medium text-[#2D5016]">Бесплатно</span></div>
         <div class="flex items-center justify-between"><span class="text-base font-bold text-[#1A1A1A]">Итого</span><span id="cartTotal" class="text-xl font-bold text-[#2D5016]">0,00 BYN</span></div>
         <div id="cartFormSection" class="flex flex-col gap-3">
             <input id="checkoutName" type="text" placeholder="Ваше имя" class="w-full rounded-xl border border-[#DDD6C8] px-4 py-3 text-sm text-[#1A1A1A] outline-none focus:border-[#2D5016]">
@@ -222,10 +143,10 @@
         </div>
         <div id="cartSuccessSection" class="hidden rounded-2xl bg-[#F5F1E8] p-4">
             <p class="text-sm font-bold text-[#1A1A1A]">Заказ оформлен!</p>
-            <p class="mt-2 text-xs text-[#7A7A7A]">Код заказа</p>
+            <p class="mt-2 text-xs text-[#666666]">Код заказа</p>
             <div id="cartOrderNumber" class="mt-3 rounded-xl bg-white px-4 py-3 text-center text-lg font-extrabold tracking-wide text-[#2D5016]"></div>
             <div class="mt-4 flex flex-col gap-2">
-                <a id="orderTelegramBtn" href="#" target="_blank" rel="nofollow noopener noreferrer" class="flex items-center justify-center gap-2 rounded-full bg-[#229ED9] px-4 py-3 text-sm font-bold text-white transition-colors hover:bg-[#1D8BC3]"><i class="ri-telegram-line text-base"></i>Написать в Telegram</a>
+                <a id="orderTelegramBtn" href="#" target="_blank" rel="nofollow noopener noreferrer" aria-label="Написать в Telegram" class="flex items-center justify-center gap-2 rounded-full bg-[#0C6BAE] px-4 py-3 text-sm font-bold text-white transition-colors hover:bg-[#095985]"><i class="ri-telegram-line text-base" aria-hidden="true"></i>Написать в Telegram</a>
                 <button id="newOrderBtn" type="button" class="rounded-full border border-[#2D5016] px-4 py-3 text-sm font-bold text-[#2D5016] transition-colors hover:bg-white">Новый заказ</button>
             </div>
         </div>
@@ -316,7 +237,7 @@
         cart.forEach(function(item){
             cartIds[item.id]=true;var lineTotal=item.price*item.qty;var el=existing[item.id];
             if(el){var qtySpan=el.querySelector('.cart-line-qty');var totalSpan=el.querySelector('.cart-line-total');if(qtySpan)qtySpan.textContent=item.qty;if(totalSpan)totalSpan.textContent=formatPrice(lineTotal);}
-            else{el=document.createElement('div');el.className='cart-line flex items-start gap-3 bg-[#FAFAF7] rounded-2xl p-3';el.dataset.cartItemId=item.id;el.innerHTML='<div class="w-16 h-16 rounded-xl overflow-hidden flex-shrink-0"><img alt="'+esc(item.name)+'" class="w-full h-full object-cover object-top" src="'+esc(item.image)+'"></div><div class="flex-1 min-w-0"><div class="flex items-start justify-between gap-2"><div><p class="text-sm font-semibold text-[#1A1A1A] leading-tight">'+esc(item.name)+'</p>'+(item.weight?'<p class="text-xs text-[#9A9A9A] mt-0.5">'+esc(item.weight)+'</p>':'')+'</div><button data-remove="'+item.id+'" class="cart-remove w-6 h-6 flex items-center justify-center rounded-full hover:bg-[#F0E0E0] text-[#C08080] transition-colors cursor-pointer flex-shrink-0"><i class="ri-delete-bin-6-line text-xs"></i></button></div><div class="flex items-center justify-between mt-2"><div class="flex items-center gap-1 border border-[#E8E3D8] rounded-full bg-white overflow-hidden"><button data-cart-minus="'+item.id+'" class="w-6 h-6 flex items-center justify-center text-[#2D5016] hover:bg-[#F5F1E8] transition-colors cursor-pointer"><i class="ri-subtract-line text-xs"></i></button><span class="cart-line-qty text-xs font-bold text-[#1A1A1A] w-5 text-center">'+item.qty+'</span><button data-cart-plus="'+item.id+'" class="w-6 h-6 flex items-center justify-center text-[#2D5016] hover:bg-[#F5F1E8] transition-colors cursor-pointer"><i class="ri-add-line text-xs"></i></button></div><span class="cart-line-total text-sm font-bold text-[#2D5016]">'+formatPrice(lineTotal)+'</span></div></div>';container.appendChild(el);}
+            else{el=document.createElement('div');el.className='cart-line flex items-start gap-3 bg-[#FAFAF7] rounded-2xl p-3';el.dataset.cartItemId=item.id;el.innerHTML='<div class="w-16 h-16 rounded-xl overflow-hidden flex-shrink-0"><img alt="'+esc(item.name)+'" class="w-full h-full object-cover object-top" src="'+esc(item.image)+'"></div><div class="flex-1 min-w-0"><div class="flex items-start justify-between gap-2"><div><p class="text-sm font-semibold text-[#1A1A1A] leading-tight">'+esc(item.name)+'</p>'+(item.weight?'<p class="text-xs text-[#5A5A5A] mt-0.5">'+esc(item.weight)+'</p>':'')+'</div><button data-remove="'+item.id+'" class="cart-remove w-6 h-6 flex items-center justify-center rounded-full hover:bg-[#F0E0E0] text-[#C08080] transition-colors cursor-pointer flex-shrink-0"><i class="ri-delete-bin-6-line text-xs"></i></button></div><div class="flex items-center justify-between mt-2"><div class="flex items-center gap-1 border border-[#E8E3D8] rounded-full bg-white overflow-hidden"><button data-cart-minus="'+item.id+'" class="w-6 h-6 flex items-center justify-center text-[#2D5016] hover:bg-[#F5F1E8] transition-colors cursor-pointer"><i class="ri-subtract-line text-xs"></i></button><span class="cart-line-qty text-xs font-bold text-[#1A1A1A] w-5 text-center">'+item.qty+'</span><button data-cart-plus="'+item.id+'" class="w-6 h-6 flex items-center justify-center text-[#2D5016] hover:bg-[#F5F1E8] transition-colors cursor-pointer"><i class="ri-add-line text-xs"></i></button></div><span class="cart-line-total text-sm font-bold text-[#2D5016]">'+formatPrice(lineTotal)+'</span></div></div>';container.appendChild(el);}
         });
         Object.keys(existing).forEach(function(id){if(!cartIds[id])existing[id].remove();});
     }

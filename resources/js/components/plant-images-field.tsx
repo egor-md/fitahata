@@ -64,7 +64,7 @@ export function PlantImagesField({ images, onChange }: Props) {
         if (i === null) return;
         setUploadingIndex(i);
         try {
-            const url = await uploadImage(croppedFile, 'plants');
+            const url = await uploadImage(croppedFile, 'catalog');
             setRow(i, { url });
         } finally {
             setUploadingIndex(null);

@@ -135,7 +135,7 @@
                                 <li>
                                     <div class="flex items-baseline gap-2 mb-1">
                                         <span class="text-sm font-medium text-[#1A1A1A]">{{ $item->label }}</span>
-                                        <span class="text-xs text-[#9A9A9A]">{{ $item->meta }}</span>
+                                        <span class="text-xs text-[#52564E]">{{ $item->meta }}</span>
                                         <span class="text-sm font-bold text-[#1A1A1A] ml-auto flex-shrink-0">{{ $item->value }}</span>
                                     </div>
                                     <div class="h-2 rounded-full overflow-hidden bg-black/5">

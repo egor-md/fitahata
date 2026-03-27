@@ -12,7 +12,7 @@ function getCsrfToken(): string {
 
 export function uploadImage(
     file: File,
-    collection: 'plants' | 'recipes' = 'plants',
+    collection: 'catalog' | 'recipes' | 'plants' = 'catalog',
 ): Promise<string> {
     if (file.size > MAX_FILE_SIZE_BYTES) {
         return Promise.reject(

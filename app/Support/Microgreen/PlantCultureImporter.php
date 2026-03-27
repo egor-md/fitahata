@@ -25,6 +25,14 @@ class PlantCultureImporter
             throw new \InvalidArgumentException("Unknown microgreen culture slug: {$slug}");
         }
 
+        $profile['images'] = [
+            [
+                'url' => '/images/catalog/'.$slug.'.webp',
+                'sort_order' => 0,
+                'is_primary' => true,
+            ],
+        ];
+
         DB::transaction(function () use ($profile, $slug) {
             self::ensureBaseTags();
 

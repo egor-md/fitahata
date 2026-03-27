@@ -1,0 +1,16 @@
+/**
+ * CSS только для публичного магазина (layouts.shop).
+ * Не тянет app.css с админкой/Inertia — меньше CSS и один render-blocking запрос вместо трёх.
+ */
+@import '@fontsource-variable/manrope';
+@import 'remixicon/fonts/remixicon.css';
+@import 'tailwindcss';
+
+@source '../views/layouts/shop.blade.php';
+@source '../views/welcome.blade.php';
+@source '../views/catalog.blade.php';
+@source '../views/microzelen.blade.php';
+@source '../views/contacts.blade.php';
+@source '../views/partials/**/*.blade.php';
+
+@import './custom_css.css';

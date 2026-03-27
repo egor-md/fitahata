@@ -1,6 +1,5 @@
 /* Public site styles (no Tailwind). Minimal scaffold; feel free to extend. */
-
-@import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap');
+/* Fonts: Instrument Sans + Nunito Variable + Remix Icon — see site-vendor.css (Vite) */
 
 :root {
   /* Layout */
@@ -321,7 +320,7 @@ header.site-header {
   line-height: 1.1;
   font-weight: 600;
   color: #3c2b21;
-  font-family: 'Nunito', sans-serif;
+  font-family: 'Nunito Variable', 'Nunito', sans-serif;
 }
 
 .home-hero-text {
@@ -3171,8 +3170,8 @@ a.catalog__allBtn {
 }
 
 .contacts-social__link--telegram:hover {
-  background: #0088cc;
-  border-color: #0088cc;
+  background: #0c6bae;
+  border-color: #0c6bae;
   color: #fff;
 }
 

@@ -1,6 +1,6 @@
-﻿@extends('layouts.shop')
+@extends('layouts.shop')
 
-@section('title', 'Главная')
+@section('title', 'FitaHata, Главная')
 @section('meta_description', 'Свежая микрозелень FITAHATA в Гомеле: популярные культуры, польза, доставка в день сбора и простые рецепты.')
 
 @section('content')
@@ -53,10 +53,10 @@
             @php
                 $badge = trim((string) ($item['badge'] ?? ''));
                 $badgeBg = match($badge) {
-                    'Хит' => 'bg-amber-500',
-                    'Новинка' => 'bg-emerald-600',
-                    'Выгода' => 'bg-blue-600',
-                    'Редкость' => 'bg-purple-600',
+                    'Хит' => 'bg-[#92400e]',
+                    'Новинка' => 'bg-[#047857]',
+                    'Выгода' => 'bg-[#2563eb]',
+                    'Редкость' => 'bg-[#9333ea]',
                     default => 'bg-[#2D5016]',
                 };
                 $fullStars = $item['rating'] ? (int) floor($item['rating']) : 0;
@@ -67,7 +67,7 @@
                  data-name="{{ $item['title'] }}"
                  data-price="{{ $item['price_raw'] }}"
                  data-price-display="{{ $item['price'] }}"
-                 data-image="{{ $item['image_url'] }}"
+                 data-image="{{ $item['image_card_src'] }}"
                  data-slug="{{ $item['slug'] }}"
                  data-weight="{{ $item['weight'] }}"
                  data-category="{{ $item['category'] }}"
@@ -75,14 +75,12 @@
             >
                 <div class="relative overflow-hidden" style="padding-top:100%">
                     <a href="{{ route('article.show', $item['slug']) }}" class="absolute inset-0 w-full h-full block">
-                        @if(!empty($item['image_webp']))
                         <picture>
-                            <source type="image/webp" srcset="{{ $item['image_webp'] }}">
-                            <img alt="{{ $item['title'] }}" class="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105" src="{{ $item['image_url'] }}" width="800" height="447" loading="lazy">
+                            @if(!empty($item['image_card_srcset']))
+                            <source type="image/webp" srcset="{{ $item['image_card_srcset'] }}" sizes="(min-width: 1024px) 283px, (min-width: 768px) 33vw, 50vw">
+                            @endif
+                            <img alt="{{ $item['title'] }}" class="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105" src="{{ $item['image_card_src'] }}" width="300" height="300" loading="lazy">
                         </picture>
-                        @else
-                        <img alt="{{ $item['title'] }}" class="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105" src="{{ $item['image_url'] }}" width="800" height="447" loading="lazy">
-                        @endif
                     </a>
                     @if($badge)
                     <span class="absolute top-3 left-3 {{ $badgeBg }} text-white text-xs font-semibold px-3 py-1 rounded-full pointer-events-none">{{ $badge }}</span>
@@ -99,11 +97,11 @@
                         <div class="flex items-start justify-between gap-2 mb-1">
                             <a href="{{ route('article.show', $item['slug']) }}" class="text-base font-bold text-[#1A1A1A] leading-tight hover:text-[#2D5016] transition-colors">{{ $item['title'] }}</a>
                             @if($item['weight'])
-                            <span class="text-xs text-[#9A9A9A] whitespace-nowrap mt-0.5">{{ $item['weight'] }}</span>
+                            <span class="text-xs text-[#767676] whitespace-nowrap mt-0.5">{{ $item['weight'] }}</span>
                             @endif
                         </div>
                         @if($item['subtitle'])
-                        <p class="text-xs text-[#7A7A7A] leading-relaxed">{{ $item['subtitle'] }}</p>
+                        <p class="text-xs text-[#666666] leading-relaxed">{{ $item['subtitle'] }}</p>
                         @endif
                         <!-- @if($item['benefit'])
                         <p class="text-xs text-[#2D5016] font-medium mt-0.5">{{ $item['benefit'] }}</p>
@@ -112,7 +110,7 @@
                     @if(!empty($item['tags']))
                     <div class="flex flex-wrap gap-1">
                         @foreach(array_slice($item['tags'], 0, 3) as $tag)
-                        <span class="text-xs bg-[#F5F1E8] text-[#5A7A3A] px-2 py-0.5 rounded-full">{{ $tag }}</span>
+                        <span class="text-xs bg-[#F5F1E8] text-[#48602E] px-2 py-0.5 rounded-full">{{ $tag }}</span>
                         @endforeach
                     </div>
                     @endif
@@ -135,9 +133,9 @@
                             @if($item['price_raw'] > 0)
                             <div class="flex items-center gap-2 custom_wel_card">
                                 <div class="qty-control flex items-center gap-1 border border-[#E8E3D8] rounded-full overflow-hidden">
-                                    <button type="button" class="qty-minus w-7 h-7 flex items-center justify-center text-[#2D5016] hover:bg-[#F5F1E8] transition-colors cursor-pointer"><i class="ri-subtract-line text-sm"></i></button>
+                                    <button type="button" aria-label="Уменьшить количество" class="qty-minus w-7 h-7 flex items-center justify-center text-[#2D5016] hover:bg-[#F5F1E8] transition-colors cursor-pointer"><i class="ri-subtract-line text-sm" aria-hidden="true"></i></button>
                                     <span class="qty-value text-sm font-semibold text-[#1A1A1A] w-5 text-center select-none">1</span>
-                                    <button type="button" class="qty-plus w-7 h-7 flex items-center justify-center text-[#2D5016] hover:bg-[#F5F1E8] transition-colors cursor-pointer"><i class="ri-add-line text-sm"></i></button>
+                                    <button type="button" aria-label="Увеличить количество" class="qty-plus w-7 h-7 flex items-center justify-center text-[#2D5016] hover:bg-[#F5F1E8] transition-colors cursor-pointer"><i class="ri-add-line text-sm" aria-hidden="true"></i></button>
                                 </div>
                                 <button type="button" class="add-to-cart flex items-center gap-1.5 px-3 py-2 rounded-full text-xs font-semibold whitespace-nowrap transition-all duration-300 cursor-pointer bg-[#2D5016] text-white hover:bg-[#1A3A0F]">
                                     <i class="ri-shopping-cart-2-line text-xs"></i>В корзину
@@ -256,7 +254,7 @@
                             <i class="ri-knife-line text-[#2D5016]" aria-hidden="true"></i>
                         </div>
                         <div>
-                            <h4 class="text-sm font-bold text-[#1A1A1A]">Доставка в день сбора</h4>
+                            <h3 class="text-sm font-bold text-[#1A1A1A]">Доставка в день сбора</h3>
                             <p class="text-xs text-[#6B6B6B] mt-0.5">Срезаем утром — привозим к вашему столу в тот же день</p>
                         </div>
                     </div>
@@ -265,7 +263,7 @@
                             <i class="ri-gift-line text-[#2D5016]" aria-hidden="true"></i>
                         </div>
                         <div>
-                            <h4 class="text-sm font-bold text-[#1A1A1A]">Бесплатно от 15 BYN</h4>
+                            <h3 class="text-sm font-bold text-[#1A1A1A]">Бесплатно от 15 BYN</h3>
                             <p class="text-xs text-[#6B6B6B] mt-0.5">Или 3 BYN по городу — выбирайте ближайшее время</p>
                         </div>
                     </div>
@@ -274,7 +272,7 @@
                             <i class="ri-time-line text-[#2D5016]" aria-hidden="true"></i>
                         </div>
                         <div>
-                            <h4 class="text-sm font-bold text-[#1A1A1A]">Удобные интервалы</h4>
+                            <h3 class="text-sm font-bold text-[#1A1A1A]">Удобные интервалы</h3>
                             <p class="text-xs text-[#6B6B6B] mt-0.5">Выбирайте время доставки с 10:00 до 21:00</p>
                         </div>
                     </div>
@@ -283,7 +281,7 @@
                             <i class="ri-repeat-line text-[#2D5016]" aria-hidden="true"></i>
                         </div>
                         <div>
-                            <h4 class="text-sm font-bold text-[#1A1A1A]">Возможность подписки</h4>
+                            <h3 class="text-sm font-bold text-[#1A1A1A]">Возможность подписки</h3>
                             <p class="text-xs text-[#6B6B6B] mt-0.5">Получайте зелень по расписанию без лишних заказов</p>
                         </div>
                     </div>
@@ -303,88 +301,11 @@
     </div>
 </section>
 
-<section id="subscription" class="bg-white py-16 sm:py-20 lg:py-24">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10">
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <div class="relative bg-[#1A3A0F] rounded-3xl p-8 sm:p-10 lg:p-12 flex flex-col justify-between overflow-hidden min-h-[28rem]">
-                <div class="absolute top-0 right-0 w-40 h-40 bg-[#2D5016]/30 rounded-full blur-3xl"></div>
-                <div class="absolute bottom-0 left-0 w-32 h-32 bg-[#4A7C2A]/20 rounded-full blur-3xl"></div>
-                <div class="relative z-10">
-                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-xs text-[#B8D4A8] font-medium mb-6">
-                        <i class="ri-leaf-line" aria-hidden="true"></i>
-                        <span>Экономия до 15%</span>
-                    </div>
-                    <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-4">
-                        Подписка на
-                        <br>
-                        <span class="text-[#B8D4A8]">микрозелень</span>
-                    </h2>
-                    <p class="text-sm text-white/70 leading-relaxed max-w-sm mb-8">
-                        Получайте свежую микрозелень каждую неделю без лишних заказов. Удобно,
-                        выгодно и всегда вовремя.
-                    </p>
-                    <div class="flex flex-col gap-3">
-                        <div class="flex items-center gap-3">
-                            <div class="w-6 h-6 rounded-full bg-[#4A7C2A] flex items-center justify-center flex-shrink-0">
-                                <i class="ri-check-line text-white text-xs" aria-hidden="true"></i>
-                            </div>
-                            <span class="text-sm text-white/90">Еженедельная доставка без оформления</span>
-                        </div>
-                        <div class="flex items-center gap-3">
-                            <div class="w-6 h-6 rounded-full bg-[#4A7C2A] flex items-center justify-center flex-shrink-0">
-                                <i class="ri-check-line text-white text-xs" aria-hidden="true"></i>
-                            </div>
-                            <span class="text-sm text-white/90">Гибкое управление набором</span>
-                        </div>
-                        <div class="flex items-center gap-3">
-                            <div class="w-6 h-6 rounded-full bg-[#4A7C2A] flex items-center justify-center flex-shrink-0">
-                                <i class="ri-check-line text-white text-xs" aria-hidden="true"></i>
-                            </div>
-                            <span class="text-sm text-white/90">Пауза или отмена в любой момент</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="relative z-10 mt-8">
-                    <button class="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-white text-[#1A3A0F] text-sm font-bold hover:bg-[#B8D4A8] transition-colors" type="button">
-                        Оформить подписку
-                        <i class="ri-arrow-right-line" aria-hidden="true"></i>
-                    </button>
-                    <span class="block text-xs text-white/50 mt-3">Отменить можно в любой момент</span>
-                </div>
-            </div>
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                <div class="group bg-[#FAFAF7] rounded-3xl p-6 sm:p-8 flex flex-col hover:-translate-y-1.5 hover:shadow-lg hover:bg-white transition-all duration-300 cursor-default">
-                    <div class="w-12 h-12 rounded-2xl bg-[#E8F5D9] flex items-center justify-center mb-4 group-hover:scale-110 group-hover:bg-[#2D5016] transition-all duration-300">
-                        <i class="ri-calendar-check-line text-xl text-[#2D5016] group-hover:text-white transition-colors duration-300" aria-hidden="true"></i>
-                    </div>
-                    <h3 class="text-sm font-bold text-[#1A1A1A] mb-1">Регулярные поставки</h3>
-                    <p class="text-xs text-[#6B6B6B] leading-relaxed">Без лишних заказов и звонков — всё по расписанию</p>
-                </div>
-                <div class="group bg-[#FAFAF7] rounded-3xl p-6 sm:p-8 flex flex-col hover:-translate-y-1.5 hover:shadow-lg hover:bg-white transition-all duration-300 cursor-default">
-                    <div class="w-12 h-12 rounded-2xl bg-[#E8F5D9] flex items-center justify-center mb-4 group-hover:scale-110 group-hover:bg-[#2D5016] transition-all duration-300">
-                        <i class="ri-percent-line text-xl text-[#2D5016] group-hover:text-white transition-colors duration-300" aria-hidden="true"></i>
-                    </div>
-                    <h3 class="text-sm font-bold text-[#1A1A1A] mb-1">Скидка для подписчиков</h3>
-                    <p class="text-xs text-[#6B6B6B] leading-relaxed">До 15% от стандартной цены каждый заказ</p>
-                </div>
-                <div class="group bg-[#FAFAF7] rounded-3xl p-6 sm:p-8 flex flex-col hover:-translate-y-1.5 hover:shadow-lg hover:bg-white transition-all duration-300 cursor-default">
-                    <div class="w-12 h-12 rounded-2xl bg-[#E8F5D9] flex items-center justify-center mb-4 group-hover:scale-110 group-hover:bg-[#2D5016] transition-all duration-300">
-                        <i class="ri-settings-3-line text-xl text-[#2D5016] group-hover:text-white transition-colors duration-300" aria-hidden="true"></i>
-                    </div>
-                    <h3 class="text-sm font-bold text-[#1A1A1A] mb-1">Индивидуальный набор</h3>
-                    <p class="text-xs text-[#6B6B6B] leading-relaxed">Выбирайте культуры под свой вкус и рацион</p>
-                </div>
-                <div class="group bg-[#FAFAF7] rounded-3xl p-6 sm:p-8 flex flex-col hover:-translate-y-1.5 hover:shadow-lg hover:bg-white transition-all duration-300 cursor-default">
-                    <div class="w-12 h-12 rounded-2xl bg-[#E8F5D9] flex items-center justify-center mb-4 group-hover:scale-110 group-hover:bg-[#2D5016] transition-all duration-300">
-                        <i class="ri-flashlight-line text-xl text-[#2D5016] group-hover:text-white transition-colors duration-300" aria-hidden="true"></i>
-                    </div>
-                    <h3 class="text-sm font-bold text-[#1A1A1A] mb-1">Приоритетная доставка</h3>
-                    <p class="text-xs text-[#6B6B6B] leading-relaxed">Первыми получаете свежий сбор каждое утро</p>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
+@include('partials.shop-subscription-block', [
+    'subscriptionTitle' => 'Подписка на доставку микрозелени',
+    'subscriptionLead' => 'Получайте свежую микрозелень по расписанию — со скидкой до 15% и приоритетной доставкой',
+    'subscriptionProduct' => 'Каталог FITAHATA',
+])
 
 <section id="why" class="bg-white py-16 sm:py-20 lg:py-24">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10">
@@ -472,7 +393,7 @@
 <section id="cooc" class="bg-[#F5F1E8] py-16 sm:py-20 lg:py-24">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10">
         <div class="text-center mb-12">
-            <span class="inline-flex items-center px-3 py-1 rounded-full bg-[#E8E3D8] text-xs text-[#6B6B6B] font-medium mb-3">Идеи для кухни</span>
+            <span class="inline-flex items-center px-3 py-1 rounded-full bg-[#E8E3D8] text-xs text-[#5A5A5A] font-medium mb-3">Идеи для кухни</span>
             <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-[#1A1A1A]">Готовим с микрозеленью</h2>
             <p class="text-[#6B6B6B] text-sm sm:text-base mt-3 max-w-xl mx-auto">Простые и вкусные рецепты, которые превратят вашу кухню в маленький ресторан</p>
         </div>
@@ -481,7 +402,7 @@
                 <div class="relative aspect-[4/3] lg:aspect-auto overflow-hidden">
                     <img id="recipeImg" alt="Сэндвич с редисом и творожным сыром" class="w-full h-full object-cover" src="./images/b97422bef2b4c9c4a3cbbf623dfb6ea3.jpg" loading="lazy">
                     <div class="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
-                    <div id="recipeTagAccent" class="absolute top-4 left-4 px-3 py-1 rounded-full bg-[#92A432] text-white text-xs font-semibold">Быстрый рецепт</div>
+                    <div id="recipeTagAccent" class="absolute top-4 left-4 px-3 py-1 rounded-full bg-[#556B1A] text-white text-xs font-semibold">Быстрый рецепт</div>
                     <div id="recipeTagGlass" class="absolute top-4 left-36 px-3 py-1 rounded-full bg-white/20 backdrop-blur-sm text-white text-xs font-medium">Сэндвичи</div>
                 </div>
                 <div class="custom_recipe_card p-6 sm:p-8 lg:p-10 flex flex-col justify-between">
@@ -509,7 +430,7 @@
                             </div>
                         </div>
                         <h3 id="recipeTitle" class="text-lg sm:text-xl font-bold text-[#1A1A1A] mb-2">Сэндвич с редисом и творожным сыром</h3>
-                        <p id="recipeDesc" class="text-sm text-[#6B6B6B] leading-relaxed mb-6">Хрустящий сэндвич с пряными ростками редиса и нежным творожным сыром. Отличный вариант для быстрого завтрака или перекуса на ходу.</p>
+                        <p id="recipeDesc" class="text-sm text-[#5E5E5E] leading-relaxed mb-6">Хрустящий сэндвич с пряными ростками редиса и нежным творожным сыром. Отличный вариант для быстрого завтрака или перекуса на ходу.</p>
                         <div>
                             <h4 class="text-xs font-bold text-[#1A1A1A] uppercase tracking-wider mb-3">Ингредиенты</h4>
                             <ul id="recipeIngredients" class="flex flex-col gap-2">
@@ -565,12 +486,22 @@
                 </div>
             </div>
             <div class="flex items-center justify-between mt-6">
-                <div class="flex items-center gap-2">
-                    <button class="recipe-dot w-2.5 h-2.5 rounded-full bg-[#D4CFC4] transition-colors" type="button" aria-label="Рецепт 1"></button>
-                    <button class="recipe-dot w-2.5 h-2.5 rounded-full bg-[#D4CFC4] transition-colors" type="button" aria-label="Рецепт 2"></button>
-                    <button class="recipe-dot recipe-dot-active w-2.5 h-2.5 rounded-full bg-[#2D5016] transition-colors" type="button" aria-label="Рецепт 3"></button>
-                    <button class="recipe-dot w-2.5 h-2.5 rounded-full bg-[#D4CFC4] transition-colors" type="button" aria-label="Рецепт 4"></button>
-                    <button class="recipe-dot w-2.5 h-2.5 rounded-full bg-[#D4CFC4] transition-colors" type="button" aria-label="Рецепт 5"></button>
+                <div class="flex items-center gap-1 sm:gap-2" role="group" aria-label="Выбор рецепта">
+                    <button class="recipe-dot inline-flex h-11 min-h-[44px] w-11 min-w-[44px] shrink-0 items-center justify-center rounded-full touch-manipulation" type="button" aria-label="Рецепт 1" aria-current="true">
+                        <span class="recipe-dot-inner block h-2.5 w-2.5 rounded-full bg-[#D4CFC4] transition-[width,background-color] duration-200" aria-hidden="true"></span>
+                    </button>
+                    <button class="recipe-dot inline-flex h-11 min-h-[44px] w-11 min-w-[44px] shrink-0 items-center justify-center rounded-full touch-manipulation" type="button" aria-label="Рецепт 2">
+                        <span class="recipe-dot-inner block h-2.5 w-2.5 rounded-full bg-[#D4CFC4] transition-[width,background-color] duration-200" aria-hidden="true"></span>
+                    </button>
+                    <button class="recipe-dot inline-flex h-11 min-h-[44px] w-11 min-w-[44px] shrink-0 items-center justify-center rounded-full touch-manipulation" type="button" aria-label="Рецепт 3">
+                        <span class="recipe-dot-inner block h-2.5 w-2.5 rounded-full bg-[#D4CFC4] transition-[width,background-color] duration-200" aria-hidden="true"></span>
+                    </button>
+                    <button class="recipe-dot inline-flex h-11 min-h-[44px] w-11 min-w-[44px] shrink-0 items-center justify-center rounded-full touch-manipulation" type="button" aria-label="Рецепт 4">
+                        <span class="recipe-dot-inner block h-2.5 w-2.5 rounded-full bg-[#D4CFC4] transition-[width,background-color] duration-200" aria-hidden="true"></span>
+                    </button>
+                    <button class="recipe-dot inline-flex h-11 min-h-[44px] w-11 min-w-[44px] shrink-0 items-center justify-center rounded-full touch-manipulation" type="button" aria-label="Рецепт 5">
+                        <span class="recipe-dot-inner block h-2.5 w-2.5 rounded-full bg-[#D4CFC4] transition-[width,background-color] duration-200" aria-hidden="true"></span>
+                    </button>
                 </div>
                 <div class="flex items-center gap-4">
                     <button
@@ -652,10 +583,19 @@
             function setActiveDot(nextIndex) {
                 dots.forEach((btn, i) => {
                     const isActive = i === nextIndex;
+                    const inner = btn.querySelector('.recipe-dot-inner');
                     btn.classList.toggle('recipe-dot-active', isActive);
-                    btn.classList.toggle('bg-[#2D5016]', isActive);
-                    btn.classList.toggle('bg-[#D4CFC4]', !isActive);
-                    btn.setAttribute('aria-current', isActive ? 'true' : 'false');
+                    if (isActive) {
+                        btn.setAttribute('aria-current', 'true');
+                    } else {
+                        btn.removeAttribute('aria-current');
+                    }
+                    if (inner) {
+                        inner.classList.toggle('w-8', isActive);
+                        inner.classList.toggle('w-2.5', !isActive);
+                        inner.classList.toggle('bg-[#2D5016]', isActive);
+                        inner.classList.toggle('bg-[#D4CFC4]', !isActive);
+                    }
                 });
             }
 

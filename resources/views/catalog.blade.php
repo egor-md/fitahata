@@ -9,13 +9,13 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 py-10">
         <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
             <div>
-                <div class="flex items-center gap-2 text-xs text-[#9A9A9A] mb-3">
-                    <a href="{{ route('home') }}" class="hover:text-[#2D5016] transition-colors">Главная</a>
-                    <i class="ri-arrow-right-s-line"></i>
+                <div class="flex items-center gap-2 text-xs text-[#5C5F58] mb-3">
+                    <a href="{{ route('home') }}" class="text-[#5C5F58] hover:text-[#2D5016] transition-colors">Главная</a>
+                    <i class="ri-arrow-right-s-line text-[#5C5F58]" aria-hidden="true"></i>
                     <span class="text-[#2D5016] font-medium">Каталог</span>
                 </div>
                 <h1 class="text-3xl md:text-4xl font-bold text-[#1A1A1A]">Каталог микрозелени</h1>
-                <p class="text-[#7A7A7A] mt-2 text-base">Свежий сбор каждое утро · Доставка по Гомелю</p>
+                <p class="text-[#525852] mt-2 text-base">Свежий сбор каждое утро · Доставка по Гомелю</p>
             </div>
             <div class="flex flex-wrap gap-3">
                 <div class="flex items-center gap-2 bg-[#F5F1E8] rounded-full px-3.5 py-2">
@@ -44,14 +44,16 @@
                     <i class="ri-apps-line text-sm"></i>Все<span class="filter-count text-xs px-1.5 py-0.5 rounded-full font-semibold bg-white/20 text-white ml-1">{{ count($catalogItems ?? []) }}</span>
                 </button>
                 @foreach(($categories ?? []) as $cat)
-                <button data-filter="{{ $cat }}" class="filter-btn flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all duration-200 cursor-pointer bg-[#F5F1E8] text-[#5A5A5A] hover:bg-[#EAE5D8] hover:text-[#2D5016]">
+                <button data-filter="{{ $cat }}" class="filter-btn flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all duration-200 cursor-pointer bg-[#F5F1E8] text-[#4A4D46] hover:bg-[#EAE5D8] hover:text-[#2D5016]">
                     {{ $cat }}<span class="filter-count text-xs px-1.5 py-0.5 rounded-full font-semibold bg-white text-[#2D5016] ml-1">0</span>
                 </button>
                 @endforeach
             </div>
-            <div class="flex items-center gap-3 flex-shrink-0">
-                <span id="itemsCount" class="text-sm text-[#8A8A8A] whitespace-nowrap">{{ count($catalogItems ?? []) }} позиций</span>
-                <select id="sortSelect" class="text-sm border border-[#E8E3D8] rounded-full px-4 py-2 bg-white text-[#1A1A1A] cursor-pointer outline-none focus:border-[#2D5016] transition-colors">
+            <div class="flex items-center gap-3 flex-shrink-0 flex-wrap">
+                <span id="itemsCount" class="text-sm text-[#5C5F58] whitespace-nowrap">{{ count($catalogItems ?? []) }} позиций</span>
+                <label for="sortSelect" class="text-sm font-medium text-[#5C5F58] whitespace-nowrap">Сортировка</label>
+                <select id="sortSelect" name="sort"
+                    class="text-sm border border-[#E8E3D8] rounded-full px-4 py-2 bg-white text-[#1A1A1A] cursor-pointer outline-none focus:border-[#2D5016] transition-colors">
                     <option value="default">По популярности</option>
                     <option value="price_asc">Цена: дешевле</option>
                     <option value="price_desc">Цена: дороже</option>
@@ -70,10 +72,10 @@
         @php
             $badge = trim((string) ($item['badge'] ?? ''));
             $badgeBg = match($badge) {
-                'Хит' => 'bg-amber-500',
-                'Новинка' => 'bg-emerald-600',
-                'Выгода' => 'bg-blue-600',
-                'Редкость' => 'bg-purple-600',
+                'Хит' => 'bg-[#92400e]',
+                'Новинка' => 'bg-[#047857]',
+                'Выгода' => 'bg-[#2563eb]',
+                'Редкость' => 'bg-[#9333ea]',
                 default => 'bg-[#2D5016]',
             };
             $fullStars = $item['rating'] ? (int) floor($item['rating']) : 0;
@@ -84,7 +86,7 @@
              data-name="{{ $item['title'] }}"
              data-price="{{ $item['price_raw'] }}"
              data-price-display="{{ $item['price'] }}"
-             data-image="{{ $item['image_url'] }}"
+             data-image="{{ $item['image_card_src'] }}"
              data-slug="{{ $item['slug'] }}"
              data-weight="{{ $item['weight'] }}"
              data-category="{{ $item['category'] }}"
@@ -92,14 +94,12 @@
         >
             <div class="relative overflow-hidden" style="padding-top:100%">
                 <a href="{{ route('article.show', $item['slug']) }}" class="absolute inset-0 w-full h-full block">
-                    @if(!empty($item['image_webp']))
                     <picture>
-                        <source type="image/webp" srcset="{{ $item['image_webp'] }}">
-                        <img alt="{{ $item['title'] }}" class="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105" src="{{ $item['image_url'] }}" width="800" height="447" loading="lazy">
+                        @if(!empty($item['image_card_srcset']))
+                        <source type="image/webp" srcset="{{ $item['image_card_srcset'] }}" sizes="(min-width: 1024px) 283px, (min-width: 768px) 33vw, 50vw">
+                        @endif
+                        <img alt="{{ $item['title'] }}" class="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105" src="{{ $item['image_card_src'] }}" width="300" height="300" loading="lazy">
                     </picture>
-                    @else
-                    <img alt="{{ $item['title'] }}" class="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105" src="{{ $item['image_url'] }}" width="800" height="447" loading="lazy">
-                    @endif
                 </a>
                 @if($badge)
                 <span class="absolute top-3 left-3 {{ $badgeBg }} text-white text-xs font-semibold px-3 py-1 rounded-full pointer-events-none">{{ $badge }}</span>
@@ -116,11 +116,11 @@
                     <div class="flex items-start justify-between gap-2 mb-1">
                         <a href="{{ route('article.show', $item['slug']) }}" class="text-base font-bold text-[#1A1A1A] leading-tight hover:text-[#2D5016] transition-colors">{{ $item['title'] }}</a>
                         @if($item['weight'])
-                        <span class="text-xs text-[#9A9A9A] whitespace-nowrap mt-0.5">{{ $item['weight'] }}</span>
+                        <span class="text-xs text-[#5C5F58] whitespace-nowrap mt-0.5">{{ $item['weight'] }}</span>
                         @endif
                     </div>
                     @if($item['subtitle'])
-                    <p class="text-xs text-[#7A7A7A] leading-relaxed">{{ $item['subtitle'] }}</p>
+                    <p class="text-xs text-[#525852] leading-relaxed">{{ $item['subtitle'] }}</p>
                     @endif
                     @if($item['benefit'])
                     <p class="text-xs text-[#2D5016] font-medium mt-0.5">{{ $item['benefit'] }}</p>
@@ -129,7 +129,7 @@
                 @if(!empty($item['tags']))
                 <div class="flex flex-wrap gap-1">
                     @foreach(array_slice($item['tags'], 0, 3) as $tag)
-                    <span class="text-xs bg-[#F5F1E8] text-[#5A7A3A] px-2 py-0.5 rounded-full">{{ $tag }}</span>
+                    <span class="text-xs bg-[#F5F1E8] text-[#2D4518] px-2 py-0.5 rounded-full">{{ $tag }}</span>
                     @endforeach
                 </div>
                 @endif
@@ -142,7 +142,7 @@
                     <i class="ri-star-line text-xs text-[#D0D0D0]"></i>
                     @endfor
                     @if($item['reviews_count'])
-                    <span class="text-xs text-[#9A9A9A] ml-1">{{ $item['reviews_count'] }} отзывов</span>
+                    <span class="text-xs text-[#5C5F58] ml-1">{{ $item['reviews_count'] }} отзывов</span>
                     @endif
                 </div>
                 @endif
@@ -152,9 +152,9 @@
                         @if($item['price_raw'] > 0)
                         <div class="flex items-center gap-2">
                             <div class="qty-control flex items-center gap-1 border border-[#E8E3D8] rounded-full overflow-hidden">
-                                <button type="button" class="qty-minus w-7 h-7 flex items-center justify-center text-[#2D5016] hover:bg-[#F5F1E8] transition-colors cursor-pointer"><i class="ri-subtract-line text-sm"></i></button>
+                                <button type="button" aria-label="Уменьшить количество" class="qty-minus w-7 h-7 flex items-center justify-center text-[#2D5016] hover:bg-[#F5F1E8] transition-colors cursor-pointer"><i class="ri-subtract-line text-sm" aria-hidden="true"></i></button>
                                 <span class="qty-value text-sm font-semibold text-[#1A1A1A] w-5 text-center select-none">1</span>
-                                <button type="button" class="qty-plus w-7 h-7 flex items-center justify-center text-[#2D5016] hover:bg-[#F5F1E8] transition-colors cursor-pointer"><i class="ri-add-line text-sm"></i></button>
+                                <button type="button" aria-label="Увеличить количество" class="qty-plus w-7 h-7 flex items-center justify-center text-[#2D5016] hover:bg-[#F5F1E8] transition-colors cursor-pointer"><i class="ri-add-line text-sm" aria-hidden="true"></i></button>
                             </div>
                             <button type="button" class="add-to-cart flex items-center gap-1.5 px-3 py-2 rounded-full text-xs font-semibold whitespace-nowrap transition-all duration-300 cursor-pointer bg-[#2D5016] text-white hover:bg-[#1A3A0F]">
                                 <i class="ri-shopping-cart-2-line text-xs"></i>В корзину
@@ -176,11 +176,11 @@
             <i class="ri-customer-service-2-line text-3xl text-[#2D5016]"></i>
         </div>
         <div class="text-center md:text-left">
-            <h3 class="text-lg font-bold text-[#1A1A1A] mb-1">Не нашли нужную культуру?</h3>
-            <p class="text-sm text-[#7A7A7A]">Мы выращиваем более 20 видов микрозелени. Напишите нам — подберём под ваши задачи.</p>
+            <h2 class="text-lg font-bold text-[#1A1A1A] mb-1">Не нашли нужную культуру?</h2>
+            <p class="text-sm text-[#525852]">Мы выращиваем более 20 видов микрозелени. Напишите нам — вырастим микрозелень под Ваш заказ.</p>
         </div>
         <div class="flex flex-col sm:flex-row gap-3 flex-shrink-0">
-            <a href="https://t.me/m93458" target="_blank" rel="nofollow noopener noreferrer" class="flex items-center gap-2 bg-[#229ED9] text-white px-5 py-2.5 rounded-full text-sm font-semibold whitespace-nowrap hover:bg-[#1D8BC3] transition-colors"><i class="ri-telegram-line text-sm"></i>Telegram</a>
+            <a href="https://t.me/m93458" target="_blank" rel="nofollow noopener noreferrer" aria-label="Написать в Telegram" class="flex items-center gap-2 bg-[#0C6BAE] text-white px-5 py-2.5 rounded-full text-sm font-semibold whitespace-nowrap hover:bg-[#095985] transition-colors"><i class="ri-telegram-line text-sm" aria-hidden="true"></i>Telegram</a>
             <a href="{{ route('contacts') }}" class="flex items-center gap-2 border border-[#2D5016] text-[#2D5016] px-5 py-2.5 rounded-full text-sm font-semibold whitespace-nowrap hover:bg-[#2D5016] hover:text-white transition-all">Написать нам</a>
         </div>
     </div>
@@ -236,7 +236,7 @@
         filterBtns.forEach(function (b) {
             var isActive = b.dataset.filter === category;
             b.classList.toggle('bg-[#2D5016]', isActive); b.classList.toggle('text-white', isActive);
-            b.classList.toggle('bg-[#F5F1E8]', !isActive); b.classList.toggle('text-[#5A5A5A]', !isActive);
+            b.classList.toggle('bg-[#F5F1E8]', !isActive); b.classList.toggle('text-[#4A4D46]', !isActive);
             var c = b.querySelector('.filter-count');
             if (c) { c.classList.toggle('bg-white/20', isActive); c.classList.toggle('text-white', isActive); c.classList.toggle('bg-white', !isActive); c.classList.toggle('text-[#2D5016]', !isActive); }
         });

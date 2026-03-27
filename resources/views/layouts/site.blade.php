@@ -24,11 +24,7 @@
     <title>@yield('title', config('app.name'))</title>
     <link rel="icon" href="/favicon.ico" sizes="any">
     <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-    <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.6.0/fonts/remixicon.css" rel="stylesheet">
-    @vite(['resources/css/site.css'])
-    @vite(['resources/css/custom_css.css'])
+    @vite(['resources/css/site-vendor.css', 'resources/css/site.css', 'resources/css/custom_css.css'])
     @stack('styles')
 </head>
 
@@ -104,9 +100,8 @@
 
                         <div class="home-footer__social">
                             <a href="#" aria-label="Instagram" class="home-footer__socialLink"><i class="ri-instagram-line home-footer__socialIcon" aria-hidden="true"></i></a>
-                            <a href="#" aria-label="Telegram" class="home-footer__socialLink"><i class="ri-telegram-line home-footer__socialIcon" aria-hidden="true"></i></a>
                             <a href="#" aria-label="ВКонтакте" class="home-footer__socialLink"><i class="ri-vk-line home-footer__socialIcon" aria-hidden="true"></i></a>
-                            <a href="https://t.me/m93458" target="_blank" rel="nofollow noopener noreferrer" aria-label="Telegram" class="home-footer__socialLink"><i class="ri-telegram-line home-footer__socialIcon" aria-hidden="true"></i></a>
+                            <a href="https://t.me/m93458" target="_blank" rel="nofollow noopener noreferrer" aria-label="Написать в Telegram" class="home-footer__socialLink"><i class="ri-telegram-line home-footer__socialIcon" aria-hidden="true"></i></a>
                         </div>
 
                         <nav class="home-footer__nav" aria-label="Навигация">
@@ -122,9 +117,9 @@
                     <div id="home-contacts" class="home-footer__col home-footer__col--contacts">
                         <h3 class="home-footer__sectionTitle"><span class="home-footer__sectionIcon" aria-hidden="true"><i class="ri-contacts-line" aria-hidden="true"></i></span>Контакты</h3>
                         <ul class="home-footer__contactList">
-                            <li class="home-footer__contactItem"><span class="home-footer__contactIcon" aria-hidden="true"><i class="ri-map-pin-2-line" aria-hidden="true"></i></span><span class="home-footer__contactBody"><span class="home-footer__contactLabel">Адрес</span><a href="https://maps.google.com/?q=Гомель" class="home-footer__contactLink">г. Гомель, ул. Советская, 112</a></span></li>
-                            <li class="home-footer__contactItem"><span class="home-footer__contactIcon" aria-hidden="true"><i class="ri-phone-line" aria-hidden="true"></i></span><span class="home-footer__contactBody"><span class="home-footer__contactLabel">Телефон</span><a href="tel:+375291234567" class="home-footer__contactLink">+375 (29) 123-45-67</a></span></li>
-                            <li class="home-footer__contactItem"><span class="home-footer__contactIcon" aria-hidden="true"><i class="ri-mail-line" aria-hidden="true"></i></span><span class="home-footer__contactBody"><span class="home-footer__contactLabel">Email</span><a href="mailto:hello@fitahata.by" class="home-footer__contactLink">hello@fitahata.by</a></span></li>
+                            <li class="home-footer__contactItem"><span class="home-footer__contactIcon" aria-hidden="true"><i class="ri-map-pin-2-line" aria-hidden="true"></i></span><span class="home-footer__contactBody"><span class="home-footer__contactLabel">Адрес</span><a href="https://www.google.com/maps/search/?api=1&amp;query={{ urlencode(config('shop.address_full')) }}" class="home-footer__contactLink">{{ config('shop.address_full') }}</a></span></li>
+                            <li class="home-footer__contactItem"><span class="home-footer__contactIcon" aria-hidden="true"><i class="ri-phone-line" aria-hidden="true"></i></span><span class="home-footer__contactBody"><span class="home-footer__contactLabel">Телефон</span>@foreach (config('shop.phones') as $phone)@if (! $loop->first)<br>@endif<a href="tel:{{ $phone['tel'] }}" class="home-footer__contactLink">{{ $phone['display'] }}</a>@endforeach</span></li>
+                            <li class="home-footer__contactItem"><span class="home-footer__contactIcon" aria-hidden="true"><i class="ri-mail-line" aria-hidden="true"></i></span><span class="home-footer__contactBody"><span class="home-footer__contactLabel">Email</span><a href="mailto:{{ config('shop.email') }}" class="home-footer__contactLink">{{ config('shop.email') }}</a></span></li>
                             <li class="home-footer__contactItem"><span class="home-footer__contactIcon" aria-hidden="true"><i class="ri-time-line" aria-hidden="true"></i></span><span class="home-footer__contactBody"><span class="home-footer__contactLabel">Режим работы</span><span class="home-footer__contactText">Пн–Вс: 8:00 — 20:00</span></span></li>
                         </ul>
                     </div>

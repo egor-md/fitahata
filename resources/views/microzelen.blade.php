@@ -6,10 +6,12 @@
 @section('content')
     @php
         $primaryImg = $plant->images->firstWhere('is_primary') ?? $plant->images->first();
-        $primarySrc = $primaryImg?->url ?? '/images/test-card/phero3.jpg';
-        $primaryWebp = (str_starts_with($primarySrc, '/images/plants/') && str_ends_with($primarySrc, '.jpg'))
-            ? Str::beforeLast($primarySrc, '.jpg') . '.webp'
-            : null;
+        $primarySrc = $primaryImg?->url ?? '/images/catalog/placeholder.webp';
+        $primarySrcset = \App\Support\ImageVariants::squareSrcset($primarySrc, [160, 300, 640]);
+        $primaryDetailSrc = \App\Support\ImageVariants::squareVariantUrl($primarySrc, 640)
+            ?? \App\Support\ImageVariants::squareVariantUrl($primarySrc, 300)
+            ?? $primarySrc;
+        $primaryCardSrc = \App\Support\ImageVariants::squareVariantUrl($primarySrc, 300) ?? $primarySrc;
     @endphp
     {{-- Продукт --}}
     <section id="productSection"
@@ -18,19 +20,17 @@
         data-slug="{{ $plant->slug }}"
         data-price="{{ (float) $plant->price }}"
         data-price-display="{{ number_format((float) $plant->price, 2, ',', ' ') }} BYN"
-        data-image="{{ $primarySrc }}"
+        data-image="{{ $primaryCardSrc }}"
         data-weight="{{ $plant->price_unit_label }}"
-        class="pt-24 sm:pt-32 lg:pt-40 pb-16 bg-[#FAFAF7]">
+        class="pt-24 sm:pt-24 lg:pt-24 pb-16 bg-[#FAFAF7]">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10">
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
                 {{-- Media --}}
                 <div>
                     <div class="relative rounded-3xl overflow-hidden bg-white aspect-square">
-                        <picture>
-                            @if($primaryWebp)<source type="image/webp" srcset="{{ $primaryWebp }}">@endif
-                            <img id="productMainImg" class="w-full h-full object-cover object-top" src="{{ $primarySrc }}"
-                                alt="{{ $plant->name }}" width="800" height="447">
-                        </picture>
+                        <img id="productMainImg" class="w-full h-full object-cover object-top" src="{{ $primaryDetailSrc }}"
+                            @if ($primarySrcset) srcset="{{ $primarySrcset }}" sizes="(min-width: 1024px) min(640px, 50vw), 100vw" @endif
+                            alt="{{ $plant->name }}" width="640" height="640" fetchpriority="high" decoding="async">
                         @if ($plant->is_bestseller)
                             <span class="absolute top-4 left-4 inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-[#2D5016] text-white text-xs font-bold">Хит продаж</span>
                         @endif
@@ -38,17 +38,25 @@
                             <div class="absolute bottom-4 right-4 inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-white/90 backdrop-blur text-sm font-semibold shadow">
                                 <span class="text-[#E8C547]" aria-hidden="true"><i class="ri-star-fill"></i></span>
                                 <span class="text-[#1A1A1A]">{{ number_format((float) $plant->rating, 1, ',', '') }}</span>
-                                <span class="text-[#9A9A9A]">({{ $plant->reviews_count }})</span>
+                                <span class="text-[#5C5F58]">({{ $plant->reviews_count }})</span>
                             </div>
                         @endif
                     </div>
                     <div class="flex gap-3 mt-4" role="group" aria-label="Галерея фото">
                         @foreach ($plant->images as $img)
+                            @php
+                                $thumbSrc = \App\Support\ImageVariants::squareVariantUrl($img->url, 160) ?? ($img->url ?? '');
+                                $detailSrc = \App\Support\ImageVariants::squareVariantUrl($img->url, 640)
+                                    ?? \App\Support\ImageVariants::squareVariantUrl($img->url, 300)
+                                    ?? $thumbSrc;
+                                $detailSrcset = \App\Support\ImageVariants::squareSrcset($img->url, [160, 300, 640]);
+                            @endphp
                             <button type="button"
                                 class="product-thumb w-20 h-20 p-0 border-2 rounded-xl overflow-hidden cursor-pointer bg-white flex-shrink-0 hover:border-[#C5D9B0] transition-colors {{ $img->url === $primarySrc ? 'product-thumb-active border-[#2D5016]' : 'border-transparent' }}"
-                                data-full-src="{{ $img->url }}"
+                                data-full-src="{{ $detailSrc }}"
+                                data-full-srcset="{{ $detailSrcset }}"
                                 aria-label="Фото {{ $loop->iteration }}">
-                                <img class="w-full h-full object-cover object-top" src="{{ $img->url }}" alt="" width="80" height="80" loading="lazy">
+                                <img class="w-full h-full object-cover object-top" src="{{ $thumbSrc }}" alt="" width="80" height="80" loading="lazy">
                             </button>
                         @endforeach
                     </div>
@@ -61,7 +69,7 @@
                             <span class="text-xs font-semibold uppercase tracking-wider text-[#5A6B4A]">{{ $plant->category_label }}</span>
                         @endif
                         @if ($plant->sku)
-                            <span class="text-xs text-[#9A9A9A]">{{ $plant->sku }}</span>
+                            <span class="text-xs text-[#5C5F58]">{{ $plant->sku }}</span>
                         @endif
                     </div>
                     <h1 class="text-3xl sm:text-4xl font-extrabold text-[#1A1A1A] leading-tight mb-3">
@@ -110,11 +118,11 @@
                             <div>
                                 <div class="text-2xl font-extrabold text-[#1A1A1A]">
                                     {{ number_format((float) $plant->price, 2, ',', ' ') }} BYN</div>
-                                <div class="text-xs text-[#9A9A9A] mt-0.5">{{ $plant->price_unit_label }}</div>
+                                <div class="text-xs text-[#5C5F58] mt-0.5">{{ $plant->price_unit_label }}</div>
                             </div>
                             @if ($plant->compare_at_price !== null)
                                 <div class="flex items-center gap-2">
-                                    <div class="text-sm line-through text-[#9A9A9A]">
+                                    <div class="text-sm line-through text-[#5C5F58]">
                                         {{ number_format((float) $plant->compare_at_price, 2, ',', ' ') }} BYN</div>
                                     @if ($plant->discount_label)
                                         @php
@@ -146,7 +154,7 @@
                         </div>
                         <p class="flex items-center gap-2 text-xs text-[#5A6B4A] mt-3">
                             <span aria-hidden="true"><i class="ri-truck-line"></i></span>
-                            Доставка по Гомелю — сегодня или завтра утром
+                            Доставка по Гомелю
                         </p>
                     </div>
                 </div>
@@ -231,14 +239,16 @@
                         </div>
                     </div>
                     <div class="flex items-center justify-center gap-6 mt-6">
-                        <div class="flex items-center gap-2" id="test-card-recipe-dots" role="tablist"
-                            aria-label="Рецепты">
+                        <div class="flex items-center gap-1 sm:gap-2" id="test-card-recipe-dots" role="group"
+                            aria-label="Выбор рецепта">
                             @foreach ($plant->recipes as $recipe)
                                 <button type="button"
-                                    class="recipe-dot-btn h-2.5 rounded-full transition-all duration-300 cursor-pointer {{ $loop->first ? 'recipe-dot-active bg-[#2D5016] w-8' : 'bg-[#C5D9B0] w-2.5' }}"
+                                    class="recipe-dot-btn inline-flex h-11 min-h-[44px] w-11 min-w-[44px] shrink-0 cursor-pointer items-center justify-center rounded-full bg-transparent p-0 touch-manipulation transition-colors duration-300 {{ $loop->first ? 'recipe-dot-active' : '' }}"
                                     data-recipe-index="{{ $loop->index }}"
-                                    aria-label="Рецепт {{ $loop->iteration }}"
-                                    aria-selected="{{ $loop->first ? 'true' : 'false' }}"></button>
+                                    aria-label="Рецепт {{ $loop->iteration }} из {{ $plant->recipes->count() }}"
+                                    @if ($loop->first) aria-current="true" @endif>
+                                    <span class="recipe-dot-btn-inner block h-2.5 rounded-full transition-all duration-300 {{ $loop->first ? 'w-8 bg-[#2D5016]' : 'w-2.5 bg-[#C5D9B0]' }}" aria-hidden="true"></span>
+                                </button>
                             @endforeach
                         </div>
                         <div class="flex items-center gap-2">
@@ -253,122 +263,11 @@
         </section>
     @endif
 
-    {{-- Подписка --}}
-    <section id="subscription" class="py-20 bg-white">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10">
-            <header class="text-center mb-12">
-                <span class="inline-flex items-center px-4 py-1.5 rounded-full bg-[#2D5016]/10 text-[#2D5016] text-xs font-bold uppercase tracking-wider mb-4">Постоянным покупателям</span>
-                <h2 class="text-2xl sm:text-3xl font-extrabold text-[#1A1A1A] mb-3">Подписка на доставку {{ $plant->name }}</h2>
-                <p class="text-sm sm:text-base text-[#5A6B4A] max-w-2xl mx-auto">Получайте свежую микрозелень по расписанию — со скидкой до 15% и
-                    приоритетной доставкой</p>
-            </header>
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
-                <div>
-                    <div class="mb-8">
-                        <h3 class="text-lg font-bold text-[#1A1A1A] mb-4">Выберите периодичность</h3>
-                        <div class="flex flex-col gap-3">
-                            <button type="button" class="flex items-center gap-4 w-full px-5 py-4 rounded-2xl border border-[#EDE8DC] bg-[#FAFAF7] text-left cursor-pointer hover:border-[#C5D9B0] transition-colors">
-                                <span class="w-5 h-5 rounded-full border-2 border-[#C5D9B0] flex-shrink-0" aria-hidden="true"></span>
-                                <span class="flex-1">
-                                    <span class="block text-sm font-semibold text-[#1A1A1A]">Каждую неделю</span>
-                                    <span class="block text-xs text-[#9A9A9A]">1 раз в неделю</span>
-                                </span>
-                                <span class="flex items-center gap-2">
-                                    <span class="inline-flex items-center px-2 py-0.5 rounded-full bg-[#FEF3C7] text-[#B45309] text-xs font-bold">Популярно</span>
-                                    <span class="inline-flex items-center px-2 py-0.5 rounded-full bg-[#D1FAE5] text-[#065F46] text-xs font-bold">−15%</span>
-                                </span>
-                            </button>
-                            <button type="button" class="flex items-center gap-4 w-full px-5 py-4 rounded-2xl border-2 border-[#2D5016] bg-[#E8F0E0] text-left cursor-pointer transition-colors">
-                                <span class="w-5 h-5 rounded-full border-2 border-[#2D5016] flex items-center justify-center flex-shrink-0" aria-hidden="true"><span class="w-2.5 h-2.5 rounded-full bg-[#2D5016]"></span></span>
-                                <span class="flex-1">
-                                    <span class="block text-sm font-semibold text-[#1A1A1A]">Раз в 2 недели</span>
-                                    <span class="block text-xs text-[#9A9A9A]">2 раза в месяц</span>
-                                </span>
-                                <span class="inline-flex items-center px-2 py-0.5 rounded-full bg-[#D1FAE5] text-[#065F46] text-xs font-bold">−10%</span>
-                            </button>
-                            <button type="button" class="flex items-center gap-4 w-full px-5 py-4 rounded-2xl border border-[#EDE8DC] bg-[#FAFAF7] text-left cursor-pointer hover:border-[#C5D9B0] transition-colors">
-                                <span class="w-5 h-5 rounded-full border-2 border-[#C5D9B0] flex-shrink-0" aria-hidden="true"></span>
-                                <span class="flex-1">
-                                    <span class="block text-sm font-semibold text-[#1A1A1A]">Раз в месяц</span>
-                                    <span class="block text-xs text-[#9A9A9A]">1 раз в месяц</span>
-                                </span>
-                                <span class="inline-flex items-center px-2 py-0.5 rounded-full bg-[#D1FAE5] text-[#065F46] text-xs font-bold">−5%</span>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div class="flex items-start gap-3 p-4 rounded-2xl bg-[#FAFAF7]">
-                            <span class="w-10 h-10 flex items-center justify-center rounded-xl bg-[#E8F0E0] text-[#2D5016] flex-shrink-0" aria-hidden="true"><i class="ri-calendar-check-line text-lg"></i></span>
-                            <div>
-                                <div class="text-sm font-bold text-[#1A1A1A]">Регулярные поставки</div>
-                                <p class="text-xs text-[#5A6B4A] mt-0.5">Без лишних заказов и звонков — всё по расписанию</p>
-                            </div>
-                        </div>
-                        <div class="flex items-start gap-3 p-4 rounded-2xl bg-[#FAFAF7]">
-                            <span class="w-10 h-10 flex items-center justify-center rounded-xl bg-[#E8F0E0] text-[#2D5016] flex-shrink-0" aria-hidden="true"><i class="ri-percent-line text-lg"></i></span>
-                            <div>
-                                <div class="text-sm font-bold text-[#1A1A1A]">Скидка для подписчиков</div>
-                                <p class="text-xs text-[#5A6B4A] mt-0.5">До 15% от стандартной цены каждый заказ</p>
-                            </div>
-                        </div>
-                        <div class="flex items-start gap-3 p-4 rounded-2xl bg-[#FAFAF7]">
-                            <span class="w-10 h-10 flex items-center justify-center rounded-xl bg-[#E8F0E0] text-[#2D5016] flex-shrink-0" aria-hidden="true"><i class="ri-settings-3-line text-lg"></i></span>
-                            <div>
-                                <div class="text-sm font-bold text-[#1A1A1A]">Индивидуальный набор</div>
-                                <p class="text-xs text-[#5A6B4A] mt-0.5">Выбирайте культуры под свой вкус и рацион</p>
-                            </div>
-                        </div>
-                        <div class="flex items-start gap-3 p-4 rounded-2xl bg-[#FAFAF7]">
-                            <span class="w-10 h-10 flex items-center justify-center rounded-xl bg-[#E8F0E0] text-[#2D5016] flex-shrink-0" aria-hidden="true"><i class="ri-flashlight-line text-lg"></i></span>
-                            <div>
-                                <div class="text-sm font-bold text-[#1A1A1A]">Приоритетная доставка</div>
-                                <p class="text-xs text-[#5A6B4A] mt-0.5">Первыми получаете свежий сбор каждое утро</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="bg-[#1A3A0F] rounded-3xl p-8 overflow-hidden relative">
-                    <div class="absolute -top-20 -right-20 w-60 h-60 rounded-full bg-[#2D5016]/30 blur-3xl"></div>
-                    <div class="absolute -bottom-20 -left-20 w-60 h-60 rounded-full bg-[#4A7C2A]/20 blur-3xl"></div>
-                    <div class="relative">
-                        <h3 class="text-xl font-bold text-white mb-2">Оформить подписку</h3>
-                        <p class="text-sm text-[#B8D4A8] mb-6">Заполните форму — мы свяжемся и согласуем всё удобно для вас</p>
-                        <form data-readdy-form="true" data-fitahata-form="true" data-form-type="subscription" method="post" action="#">
-                            @csrf
-                            <input type="hidden" name="product" value="{{ $plant->name }} FITAHATA">
-                            <div class="flex flex-col gap-4">
-                                <div>
-                                    <label class="block text-xs font-semibold text-[#B8D4A8] uppercase tracking-wider mb-1.5" for="tc-sub-name">Ваше имя</label>
-                                    <input id="tc-sub-name" class="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-sm text-white placeholder-white/40 outline-none focus:border-[#B8D4A8] focus:ring-2 focus:ring-[#B8D4A8]/20 transition" type="text" name="sub_name" required
-                                        placeholder="Иван Иванов">
-                                </div>
-                                <div>
-                                    <label class="block text-xs font-semibold text-[#B8D4A8] uppercase tracking-wider mb-1.5" for="tc-sub-phone">Телефон</label>
-                                    <input id="tc-sub-phone" class="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-sm text-white placeholder-white/40 outline-none focus:border-[#B8D4A8] focus:ring-2 focus:ring-[#B8D4A8]/20 transition" type="tel" name="sub_phone" required
-                                        placeholder="+375 29 000-00-00">
-                                </div>
-                                <div>
-                                    <label class="block text-xs font-semibold text-[#B8D4A8] uppercase tracking-wider mb-1.5" for="tc-sub-email">Email</label>
-                                    <input id="tc-sub-email" class="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-sm text-white placeholder-white/40 outline-none focus:border-[#B8D4A8] focus:ring-2 focus:ring-[#B8D4A8]/20 transition" type="email" name="email"
-                                        placeholder="mail@example.com">
-                                </div>
-                                <div>
-                                    <label class="block text-xs font-semibold text-[#B8D4A8] uppercase tracking-wider mb-1.5" for="tc-sub-addr">Адрес доставки в Гомеле</label>
-                                    <input id="tc-sub-addr" class="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-sm text-white placeholder-white/40 outline-none focus:border-[#B8D4A8] focus:ring-2 focus:ring-[#B8D4A8]/20 transition" type="text" name="sub_address"
-                                        placeholder="ул. Советская, 1">
-                                </div>
-                                <button type="submit" class="w-full inline-flex items-center justify-center gap-2 px-5 py-3.5 rounded-full bg-white text-[#1A3A0F] text-sm font-bold hover:bg-[#E8F0E0] transition-colors cursor-pointer mt-2">
-                                    Оформить подписку <i class="ri-arrow-right-line" aria-hidden="true"></i>
-                                </button>
-                                <p data-form-status class="text-sm text-white/90"></p>
-                                <p class="text-center text-xs text-white/50">Отменить можно в любой момент</p>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+    @include('partials.shop-subscription-block', [
+        'subscriptionTitle' => 'Подписка на доставку '.$plant->name,
+        'subscriptionLead' => 'Получайте свежую микрозелень по расписанию — со скидкой до 15% и приоритетной доставкой',
+        'subscriptionProduct' => $plant->name.' FITAHATA',
+    ])
 
     <section class="py-16 bg-[#F5F1E8] text-center">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10">
@@ -393,7 +292,10 @@
                 thumbs.forEach(function (btn) {
                     btn.addEventListener('click', function () {
                         var src = btn.getAttribute('data-full-src');
+                        var srcset = btn.getAttribute('data-full-srcset');
                         if (src) main.src = src;
+                        if (srcset) main.setAttribute('srcset', srcset);
+                        else main.removeAttribute('srcset');
                         thumbs.forEach(function (b) {
                             b.classList.remove('product-thumb-active', 'border-[#2D5016]');
                             b.classList.add('border-transparent');
@@ -525,12 +427,19 @@
                         track.style.transform = 'translateX(-' + (idx * 100) + '%)';
                         dotBtns.forEach(function (d, j) {
                             var on = j === idx;
+                            var inner = d.querySelector('.recipe-dot-btn-inner');
                             d.classList.toggle('recipe-dot-active', on);
-                            d.classList.toggle('bg-[#2D5016]', on);
-                            d.classList.toggle('w-8', on);
-                            d.classList.toggle('bg-[#C5D9B0]', !on);
-                            d.classList.toggle('w-2.5', !on);
-                            d.setAttribute('aria-selected', on ? 'true' : 'false');
+                            if (on) {
+                                d.setAttribute('aria-current', 'true');
+                            } else {
+                                d.removeAttribute('aria-current');
+                            }
+                            if (inner) {
+                                inner.classList.toggle('w-8', on);
+                                inner.classList.toggle('w-2.5', !on);
+                                inner.classList.toggle('bg-[#2D5016]', on);
+                                inner.classList.toggle('bg-[#C5D9B0]', !on);
+                            }
                         });
                     }
 
@@ -581,50 +490,6 @@
                 });
             }
 
-            var subscriptionForm = document.querySelector('[data-fitahata-form="true"][data-form-type="subscription"]');
-            if (subscriptionForm) {
-                function setSubscriptionStatus(message, isError) {
-                    var status = subscriptionForm.querySelector('[data-form-status]');
-                    if (!status) return;
-                    status.textContent = message || '';
-                    status.className = 'text-sm ' + (isError ? 'text-red-300' : 'text-white/90');
-                }
-
-                subscriptionForm.addEventListener('submit', async function (event) {
-                    event.preventDefault();
-
-                    var submitButton = subscriptionForm.querySelector('[type="submit"]');
-                    if (submitButton) submitButton.disabled = true;
-                    setSubscriptionStatus('', false);
-
-                    try {
-                        var formData = new FormData(subscriptionForm);
-                        formData.append('form_type', 'subscription');
-                        formData.append('page_url', window.location.href);
-
-                        var response = await fetch('{{ route('forms.submit') }}', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'Accept': 'application/json',
-                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                            },
-                            body: JSON.stringify(Object.fromEntries(formData.entries()))
-                        });
-                        var result = await response.json();
-                        if (!response.ok) {
-                            throw new Error(result.message || 'Не удалось отправить форму.');
-                        }
-
-                        subscriptionForm.reset();
-                        setSubscriptionStatus('Заявка отправлена в Telegram.', false);
-                    } catch (error) {
-                        setSubscriptionStatus(error.message || 'Ошибка отправки.', true);
-                    } finally {
-                        if (submitButton) submitButton.disabled = false;
-                    }
-                });
-            }
         })();
     </script>
 @endpush
